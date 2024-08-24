@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <link rel="shortcut icon" href="icon.ico" type="image/x-icon">
+   <title>Страница регистрации</title>
+   <link rel="stylesheet" href="style.css">
+   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <section class="wrapper reg">
+      <form id="registrationForm">
+          <h1>Регистрация</h1>
+          <div style="padding-left: 61px; 
+          margin-top: 10px; font-size: 14px;">Введите необходимые данные</div>
+          <section class="input-fields" style="padding-bottom: 10px;">
+            <div class="point">
+            <input class="input-reg" id="id" type="number" name="ID" placeholder="ID" required>
+            </div>
+            <div class="point">
+            <input class="input-reg" id="password" type="password" name="password" placeholder="Пароль" required>
+            </div>
+            <div class="point">
+            <input class="input-reg" id="surname" type="text" name="surname" placeholder="Фамилия" required>
+            </div>
+            <div class="point">
+            <input class="input-reg" id="name" type="text" name="name" placeholder="Имя" required>
+            </div>
+            <div class="point">
+            <input class="input-reg" id="patronymic" type="text" name="patronymic" placeholder="Отчество" required>
+            </div>
+            <div class="point">
+            <input class="input-reg" id="email" type="email" name="email" placeholder="email" required>
+            </div>
+            <div class="point">
+            <input class="input-reg" id="phone" type="tel" name="phone" placeholder="Телефон" required>
+            </div>
+          </section>
+          <button class="btn-register" type="submit">Зарегистрироваться</button>
+          <div class='errorMessages' id="errorMessages"></div>
+          <script src="script-reg.js"></script>
+      </form>
+  </section>
+</body>
+</html>

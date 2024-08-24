@@ -1,0 +1,158 @@
+*{
+   margin: 0;
+   padding: 0;
+   box-sizing: border-box;
+   font-family: "Roboto", sans-serif;
+}
+
+body {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   min-height: 100vh;
+   background-color: #D9D9D9;
+}
+
+.wrapper {
+   width: 522px;
+   background: #222020;
+   color: white;
+   border-radius: 20px;
+}
+
+.reg {
+   width: 676px;
+   margin: 0;
+}
+
+.input-fields {
+   border-radius: 20px;
+   width: 587px;
+   background: #adadad;
+   margin: 0 auto;
+   display: flex;         
+   flex-direction: column; 
+   align-items: center; 
+   margin-top: 10px;
+
+}
+
+h1 {
+   margin-top: 18px;
+   padding-left: 61px;
+   font-size: 36px;
+   font-family: "Roboto", sans-serif;
+   font-weight: normal;
+   border-bottom: 2px solid white;
+   line-height: 1.5;
+}
+
+.input-box {
+   width: 400px;
+   height: 25px;
+   display: block;
+   margin: 0 auto;
+   margin-top: 26px;
+   margin-bottom: 22px;
+   font-size: 20px;
+   background-color: #D9D9D9;
+   border: none;
+   outline: none;
+}
+
+.input-box::placeholder {
+   color: black;
+}
+
+.point {
+   position: relative;
+   display: inline-block; 
+}
+
+.input-reg {
+   width: 572px;
+   margin: 7px 0;
+   padding-left: 1.3%;
+   font-size: 16px;
+   background: #adadad;
+   border: #adadad;
+   border: none;
+   border-bottom: 1.59px solid #191717;
+   position: relative;
+   box-sizing: border-box;
+   margin-left: 2.35px;
+}
+
+.point::before,
+.point::after {
+   content: '•'; /* Символ точки */
+   color: #191717; /* Цвет точки */
+   position: absolute; /* Абсолютное позиционирование */
+   font-size: 20px; /* Размер точки */
+}
+.point::before {
+   bottom: -5px; 
+   left: -3px; 
+}
+
+.point::after {
+   bottom: -5px; 
+   right: -3px;
+}
+
+.input-reg::placeholder {
+   color: white;
+}
+
+.input-reg:focus {
+   outline: none;
+}
+
+button {
+   border-radius: 30px;
+   width: 137px; 
+   height: 44px;
+   margin-bottom: 22px;
+   margin-right: 70px;
+   font-size: 20px;
+   background-color: #056df4;
+   color: white;
+   border: none;
+   outline: none;
+}
+
+.btn-reg {
+   width: 212px; 
+   height: 44px;
+   margin-bottom: 22px;
+   margin-left: 70px;
+   margin-right: 27px;
+   background-color: #78a4c3;
+}
+
+.btn-reg:focus {
+   background-color: #88b9dc; 
+}
+
+button:focus {
+   background-color: #4d97f9; 
+}
+
+.btn-register {
+   width: 293px;
+   height: 48px;
+   background-color: #5d8db0;
+   margin-top: 40px;
+   margin-bottom: 28px;
+   margin-left: 45px;
+}
+
+.errorMessages{
+   color: white;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+   -webkit-appearance: none;
+   margin: 0;
+}
