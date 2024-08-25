@@ -60,10 +60,10 @@ document.getElementById('registrationForm').addEventListener('submit', async fun
 
        const result = await response.json();
        console.log(result);
-       errorMessagesDiv.innerHTML = 'Регистрация прошла успешно!';
+       errorMessages.innerHTML = 'Регистрация прошла успешно!';
    } catch (error) {
        console.error('Ошибка:', error);
-       errorMessagesDiv.innerHTML = 'Ошибка при отправке данных';
+       errorMessages.innerHTML = 'Ошибка при отправке данных';
    }
 });
 
