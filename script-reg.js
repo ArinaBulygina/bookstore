@@ -40,7 +40,7 @@ document.getElementById('registrationForm').addEventListener('submit', async fun
    }
 
    const data = {
-       seller_id: id,
+       id_seller: id,
        password,
        seller_last_name: document.getElementById('surname').value.trim(),
        seller_first_name: document.getElementById('name').value.trim(),
