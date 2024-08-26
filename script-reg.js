@@ -40,12 +40,13 @@ document.getElementById('registrationForm').addEventListener('submit', async fun
    }
 
    const data = {
-       id,
-       surname: document.getElementById('surname').value.trim(),
-       name: document.getElementById('name').value.trim(),
-       patronymic: document.getElementById('patronymic').value.trim(),
+       seller_id: id,
+       password,
+       seller_last_name: document.getElementById('surname').value.trim(),
+       seller_first_name: document.getElementById('name').value.trim(),
+       seller_patronymic: document.getElementById('patronymic').value.trim(),
        email,
-       phone: cleanPhoneNumber(phone)
+       phone_number: cleanPhoneNumber(phone)
    };
    try {
        const response = await fetch('', { // не забыть заменить URL
