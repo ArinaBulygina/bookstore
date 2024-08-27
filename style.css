@@ -148,7 +148,9 @@ button:focus {
 }
 
 .errorMessages{
-   color: white;
+   color: red;
+   margin-left: 50px;
+   margin-bottom: 28px;
 }
 
 input::-webkit-outer-spin-button,
@@ -156,3 +158,5 @@ input::-webkit-inner-spin-button {
    -webkit-appearance: none;
    margin: 0;
 }
+
+
