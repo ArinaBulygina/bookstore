@@ -50,7 +50,7 @@ document.getElementById('registrationForm').addEventListener('submit', async fun
        phone_number: cleanPhoneNumber(phone)
    };
    try {
-       const response = await fetch('', { // не забыть заменить URL
+       const response = await fetch('http://127.0.0.1:8000/register/', { // не забыть заменить URL
            method: 'POST',
            headers: { 'Content-Type': 'application/json' },
            body: JSON.stringify(data)
