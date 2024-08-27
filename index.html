@@ -4,23 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="icon.ico" type="image/x-icon">
-    <title>Document</title>
+    <title>Страница авторизации</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 
 </head>
 <body>
     <section class="wrapper">
-        <form action="">
+        <form id="loginForm">
             <h1>Авторизация</h1>
             <div>
-                <input class="input-box" type="number" name="ID" placeholder="ID" required>
+                <input class="input-box" id="id" type="number" name="ID" placeholder="ID" required>
             </div>
             <div>
-                <input class="input-box" type="password" name="password" placeholder="Пароль" required>
+                <input class="input-box" id="password" type="password" name="password" placeholder="Пароль" required>
             </div>
             <button class="btn-reg" type="button">Регистрация</button>
             <button class="btn" type="submit">Войти</button>
+            <div class='errorMessages' id="errorMessages"></div>
+            <script src="script-login.js"></script>
         </form>
     </section>
 </body>
