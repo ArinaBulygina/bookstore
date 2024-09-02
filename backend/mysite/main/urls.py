@@ -1,23 +1,23 @@
 from django.contrib import admin
 from django.urls import path
-from . import views
 from .views import SellerRegistrationView, LoginView
 from .views import (SellerListCreateView, SellerRetrieveUpdateDestroyView, BookListCreateView,
                     BookRetrieveUpdateDestroyView, AuthorListCreateView, AuthorRetrieveUpdateDestroyView,
                     GenreListCreateView, GenreRetrieveUpdateDestroyView, DiscountListCreateView,
                     DiscountRetrieveUpdateDestroyView, SaleListCreateView, SaleRetrieveUpdateDestroyView,
                     AuthorsOfBookListCreateView, AuthorsOfBookRetrieveUpdateDestroyView, BookNumberListCreateView,
-                    BookNumberRetrieveUpdateDestroyView)
+                    BookNumberRetrieveUpdateDestroyView, BookDetailsView, UpdateLastDeauthorizationView, UpdateBookView, AddBookView)
 
 urlpatterns = [
-    #path('', views.index),
-    #path('book/<int:bookid>', views.book),
     path('register/', SellerRegistrationView.as_view(), name='seller-registration'),
     path('login/', LoginView.as_view(), name='login'),
+    path('book-details/', BookDetailsView.as_view(), name='book-details'),
+    path('book/add/', AddBookView.as_view(), name='add_book'),
+    path('book/<int:id_book>/update/', UpdateBookView.as_view(), name='update_book'),
     # Seller
     path('sellers/', SellerListCreateView.as_view(), name='seller-list-create'),
     path('sellers/<int:pk>/', SellerRetrieveUpdateDestroyView.as_view(), name='seller-detail'),
-
+    path('seller/<int:id_seller>/deauthorize/', UpdateLastDeauthorizationView.as_view(), name='update_last_deauthorization'),
     # Book
     path('books/', BookListCreateView.as_view(), name='book-list-create'),
     path('books/<int:pk>/', BookRetrieveUpdateDestroyView.as_view(), name='book-detail'),

@@ -40,25 +40,48 @@ class SellerSerializer(serializers.ModelSerializer):
         model = Seller
         fields = '__all__'
 
-class BookSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Book
-        fields = '__all__'
-
-class AuthorSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Author
-        fields = '__all__'
 
 class GenreSerializer(serializers.ModelSerializer):
     class Meta:
         model = Genre
-        fields = '__all__'
+        fields = ['id_genre', 'name_of_genre']
+
 
 class DiscountSerializer(serializers.ModelSerializer):
     class Meta:
         model = Discount
-        fields = '__all__'
+        fields = ['id_discount', 'name_of_discount', 'discount_percentage']
+
+
+class AuthorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Author
+        fields = ['id_author', 'author_last_name', 'author_first_name', 'author_patronymic']
+
+
+class BookSerializer(serializers.ModelSerializer):
+    genre = GenreSerializer(source='id_genre', read_only=True)
+    discount = DiscountSerializer(source='id_discount', read_only=True)
+    authors = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Book
+        fields = ['id_book', 'title', 'publishing', 'price', 'rack_number', 'number_of_copies',
+                  'discounted_price', 'description', 'genre', 'discount', 'authors']
+
+    def get_authors(self, obj):
+        authors_of_book = AuthorsOfBook.objects.filter(id_book=obj)
+        authors = Author.objects.filter(id_author__in=[aob.id_author.id_author for aob in authors_of_book])
+        return AuthorSerializer(authors, many=True).data
+
+
+class BookNumberSerializer(serializers.ModelSerializer):
+    book = BookSerializer(source='id_book', read_only=True)
+
+    class Meta:
+        model = BookNumber
+        fields = ['book_number', 'book']
+
 
 class SaleSerializer(serializers.ModelSerializer):
     class Meta:
@@ -70,7 +93,3 @@ class AuthorsOfBookSerializer(serializers.ModelSerializer):
         model = AuthorsOfBook
         fields = '__all__'
 
-class BookNumberSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = BookNumber
-        fields = '__all__'
