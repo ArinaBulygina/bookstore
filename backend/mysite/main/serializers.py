@@ -75,13 +75,17 @@ class BookSerializer(serializers.ModelSerializer):
         return AuthorSerializer(authors, many=True).data
 
 
-class BookNumberSerializer(serializers.ModelSerializer):
+class BookNumberSerializerFull(serializers.ModelSerializer):
     book = BookSerializer(source='id_book', read_only=True)
 
     class Meta:
         model = BookNumber
         fields = ['book_number', 'book']
 
+class BookNumberSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BookNumber
+        fields = '__all__'
 
 class SaleSerializer(serializers.ModelSerializer):
     class Meta:
