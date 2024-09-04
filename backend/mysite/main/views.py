@@ -76,8 +76,7 @@ class AddBookView(APIView):
         data = request.data
 
         # Получаем жанр по его имени
-        genre = get_object_or_404(Genre, name_of_genre=data['genre'])
-
+        genre, created = Genre.objects.get_or_create(name_of_genre=data['genre'])
         # Получаем скидку по ее имени, если она указана
         discount = None
         if 'discount' in data:
@@ -123,7 +122,7 @@ class UpdateBookView(APIView):
 
         # Обновляем жанр книги, если он указан
         if 'genre' in data:
-            genre = get_object_or_404(Genre, name_of_genre=data['genre'])
+            genre, created = Genre.objects.get_or_create(name_of_genre=data['genre'])
             book.id_genre = genre
 
         # Обновляем скидку книги, если она указана
@@ -243,3 +242,5 @@ class BookDetailsView(APIView):
         book_numbers = BookNumber.objects.all()
         serializer = BookNumberSerializer(book_numbers, many=True)
         return Response(serializer.data)
+
+
