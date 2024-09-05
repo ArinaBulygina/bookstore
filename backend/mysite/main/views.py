@@ -8,7 +8,7 @@ from .serializers import SellerRegistrationSerializer
 from rest_framework import generics
 from .models import Seller, Book, Author, Genre, Discount, Sale, AuthorsOfBook, BookNumber
 from .serializers import (SellerSerializer, BookSerializer, AuthorSerializer, GenreSerializer,
-                          DiscountSerializer, SaleSerializer, AuthorsOfBookSerializer, BookNumberSerializer)
+                          DiscountSerializer, SaleSerializer, AuthorsOfBookSerializer, BookNumberSerializer, BookNumberSerializerFull)
 from django.utils import timezone
 
 
@@ -89,7 +89,6 @@ class AddBookView(APIView):
             publishing=data['publishing'],
             price=data['price'],
             rack_number=data['rack_number'],
-            number_of_copies=data['number_of_copies'],
             id_discount=discount,
             discounted_price=data.get('discounted_price', data['price']),
             description=data['description']
@@ -102,9 +101,9 @@ class AddBookView(APIView):
 
         for author_data in authors:
             author, created = Author.objects.get_or_create(
-                author_last_name=author_data['last_name'],
-                author_first_name=author_data['first_name'],
-                author_patronymic=author_data.get('patronymic', None)
+                author_last_name=author_data['author_last_name'],
+                author_first_name=author_data['author_first_name'],
+                author_patronymic=author_data.get('author_patronymic', None)
             )
             AuthorsOfBook.objects.create(id_author=author, id_book=book)
 
@@ -135,7 +134,6 @@ class UpdateBookView(APIView):
         book.publishing = data.get('publishing', book.publishing)
         book.price = data.get('price', book.price)
         book.rack_number = data.get('rack_number', book.rack_number)
-        book.number_of_copies = data.get('number_of_copies', book.number_of_copies)
         book.discounted_price = data.get('discounted_price', book.discounted_price)
         book.description = data.get('description', book.description)
 
@@ -151,9 +149,9 @@ class UpdateBookView(APIView):
 
             for author_data in authors:
                 author, created = Author.objects.get_or_create(
-                    author_last_name=author_data['last_name'],
-                    author_first_name=author_data['first_name'],
-                    author_patronymic=author_data.get('patronymic', None)
+                    author_last_name=author_data['author_last_name'],
+                    author_first_name=author_data['author_first_name'],
+                    author_patronymic=author_data.get('author_patronymic', None)
                 )
                 AuthorsOfBook.objects.create(id_author=author, id_book=book)
 
@@ -239,8 +237,8 @@ class BookNumberRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView)
 
 class BookDetailsView(APIView):
     def get(self, request, *args, **kwargs):
-        book_numbers = BookNumber.objects.all()
-        serializer = BookNumberSerializer(book_numbers, many=True)
+        book = Book.objects.all()
+        serializer = BookSerializer(book, many=True)
         return Response(serializer.data)
 
 
