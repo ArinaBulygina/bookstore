@@ -169,7 +169,8 @@ h1 {
    border-right: 1px solid white;
    text-align: center; 
    font-family: "Roboto", sans-serif;
-   font-weight: normal; 
+   font-weight: normal;
+   color: white;
 }
 
 thead th:first-child {
