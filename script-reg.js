@@ -15,6 +15,7 @@ function formatPhoneInput(value) {
 
 document.getElementById('registrationForm').addEventListener('submit', async function(event) {
    event.preventDefault();
+   errorMessages.innerHTML = '';
 
    const id = document.getElementById('id').value.trim();
    const password = document.getElementById('password').value.trim();
@@ -60,8 +61,8 @@ document.getElementById('registrationForm').addEventListener('submit', async fun
        }
 
        const result = await response.json();
-       console.log(result);
-       errorMessages.innerHTML = 'Регистрация прошла успешно!';
+       console.log('Регистрация прошла успешно!', result);
+       window.location.href = "index.html"
    } catch (error) {
        console.error('Ошибка:', error);
        errorMessages.innerHTML = 'Ошибка при отправке данных';
