@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 async function loadData() {
    try {
-      const response = await fetch(''); // Надо вставить
+      const response = await fetch('http://127.0.0.1:8000/book-details/'); // Надо вставить
 
       if (!response.ok) {
          throw new Error(`Ошибка: ${response.status}`);
