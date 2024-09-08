@@ -27,12 +27,19 @@ async function loadData() {
 }
 
 function performSearch(query) {
-   const filteredData = allData.filter(item => 
-      item.title.toLowerCase().includes(query.toLowerCase()) || 
-      item.publishing.toLowerCase().includes(query.toLowerCase()) || 
-      item.genre.name_of_genre.toLowerCase().includes(query.toLowerCase()) || 
-      item.authors.toLowerCase().includes(query.toLowerCase())
-   );
+   const lowerCaseQuery = query.toLowerCase();
+      const filteredData = allData.filter(item => {
+         const authorNames = item.authors.map(author => 
+            `${author.author_last_name.toLowerCase()} ${author.author_first_name.toLowerCase()}`
+         ).join(' ');
+
+         return (
+            item.title.toLowerCase().includes(lowerCaseQuery) || 
+            item.publishing.toLowerCase().includes(lowerCaseQuery) || 
+            item.genre.name_of_genre.toLowerCase().includes(lowerCaseQuery) || 
+            authorNames.includes(lowerCaseQuery)
+         );
+      });
    populateTable(filteredData);
 }
 
@@ -80,11 +87,11 @@ function populateTable(data) {
       row.appendChild(genreCell);
 
       const name_of_discountCell = document.createElement('td');
-      name_of_discountCell.textContent = item.discount.name_of_discount;
+      name_of_discountCell.textContent = item.discount && item.discount.name_of_discount ? item.discount.name_of_discount : '';
       row.appendChild(name_of_discountCell);
 
       const discountCell = document.createElement('td');
-      discountCell.textContent = item.discount.discount_percentage + "%";
+      discountCell.textContent = item.discount && item.discount.discount_percentage ? `${item.discount.discount_percentage}%` : '';
       row.appendChild(discountCell);
 
       const authorsCell = document.createElement('td');
