@@ -1,7 +1,15 @@
 document.addEventListener('DOMContentLoaded', function() {
    loadData();
+
+   const searchInput = document.getElementById('searchInput');
+   searchInput.addEventListener('keypress', function(event) {
+      if (event.key === 'Enter') {
+         performSearch(searchInput.value);
+      }
+  });
 });
 
+let allData = []; 
 async function loadData() {
    try {
       const response = await fetch('http://127.0.0.1:8000/book-details/'); // Надо вставить
@@ -11,10 +19,21 @@ async function loadData() {
       }
 
       const data = await response.json();
-      populateTable(data);
+      allData = data;
+      populateTable(allData);
    } catch (error) {
       console.error('Ошибка при получении данных:', error);
    }
+}
+
+function performSearch(query) {
+   const filteredData = allData.filter(item => 
+      item.title.toLowerCase().includes(query.toLowerCase()) || 
+      item.publishing.toLowerCase().includes(query.toLowerCase()) || 
+      item.genre.name_of_genre.toLowerCase().includes(query.toLowerCase()) || 
+      item.authors.toLowerCase().includes(query.toLowerCase())
+   );
+   populateTable(filteredData);
 }
 
 function populateTable(data) {
