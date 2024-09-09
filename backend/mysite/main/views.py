@@ -8,7 +8,8 @@ from .serializers import SellerRegistrationSerializer
 from rest_framework import generics
 from .models import Seller, Book, Author, Genre, Discount, Sale, AuthorsOfBook, BookNumber
 from .serializers import (SellerSerializer, BookSerializer, AuthorSerializer, GenreSerializer,
-                          DiscountSerializer, SaleSerializer, AuthorsOfBookSerializer, BookNumberSerializer, BookNumberSerializerFull)
+                          DiscountSerializer, SaleSerializer, AuthorsOfBookSerializer, BookNumberSerializer,
+                          BookNumberSerializerFull)
 from django.utils import timezone
 
 
@@ -66,7 +67,8 @@ class UpdateLastDeauthorizationView(APIView):
             seller = get_object_or_404(Seller, pk=id_seller)
             seller.date_of_last_deauthorization = timezone.now()
             seller.save()
-            return Response({'status': 'success', 'message': 'Date of last deauthorization updated successfully.'}, status=status.HTTP_200_OK)
+            return Response({'status': 'success', 'message': 'Date of last deauthorization updated successfully.'},
+                            status=status.HTTP_200_OK)
         except Seller.DoesNotExist:
             return Response({"error": "Seller not found."}, status=status.HTTP_404_NOT_FOUND)
 
@@ -79,8 +81,10 @@ class AddBookView(APIView):
         genre, created = Genre.objects.get_or_create(name_of_genre=data['genre'])
         # Получаем скидку по ее имени, если она указана
         discount = None
+        discounted_price = None
         if 'discount' in data:
             discount = get_object_or_404(Discount, name_of_discount=data['discount'])
+            discounted_price = data['price'] - (discount.discount_percentage / 100 * data['price'])
 
         # Создаем новую запись книги
         book = Book.objects.create(
@@ -90,7 +94,7 @@ class AddBookView(APIView):
             price=data['price'],
             rack_number=data['rack_number'],
             id_discount=discount,
-            discounted_price=data.get('discounted_price', data['price']),
+            discounted_price=discounted_price,
             description=data['description']
         )
 
@@ -107,7 +111,17 @@ class AddBookView(APIView):
             )
             AuthorsOfBook.objects.create(id_author=author, id_book=book)
 
-        return Response({"status": "success", "message": "Book and authors added successfully.", "book_id": book.id_book}, status=status.HTTP_201_CREATED)
+        # Обработка book_number
+        book_numbers = data.get('book_numbers', [])
+        if book_numbers:
+            for book_number in book_numbers:
+                BookNumber.objects.create(book_number=book_number, id_book=book)
+
+        # Возврат полного списка книг
+        all_books = Book.objects.all()
+        serializer = BookSerializer(all_books, many=True)
+        return Response({"status": "success", "message": "Book and authors added successfully.",
+                         "books": serializer.data}, status=status.HTTP_201_CREATED)
 
 
 class UpdateBookView(APIView):
@@ -128,13 +142,13 @@ class UpdateBookView(APIView):
         if 'discount' in data:
             discount = get_object_or_404(Discount, name_of_discount=data['discount'])
             book.id_discount = discount
+            book.discounted_price = book.price - (discount.discount_percentage / 100 * book.price)
 
         # Обновляем другие поля книги, если они указаны в запросе
         book.title = data.get('title', book.title)
         book.publishing = data.get('publishing', book.publishing)
         book.price = data.get('price', book.price)
         book.rack_number = data.get('rack_number', book.rack_number)
-        book.discounted_price = data.get('discounted_price', book.discounted_price)
         book.description = data.get('description', book.description)
 
         # Сохраняем обновленную книгу
@@ -155,7 +169,18 @@ class UpdateBookView(APIView):
                 )
                 AuthorsOfBook.objects.create(id_author=author, id_book=book)
 
-        return Response({"status": "success", "message": "Book updated successfully.", "book_id": book.id_book}, status=status.HTTP_200_OK)
+        # Обработка book_number
+        book_numbers = data.get('book_numbers', [])
+        if book_numbers:
+            for book_number in book_numbers:
+                BookNumber.objects.create(book_number=book_number, id_book=book)
+
+        # Возврат полного списка книг
+        all_books = Book.objects.all()
+        serializer = BookSerializer(all_books, many=True)
+
+        return Response({"status": "success", "message": "Book updated successfully.", "books": serializer.data},
+                        status=status.HTTP_200_OK)
 
 
 # Для Book

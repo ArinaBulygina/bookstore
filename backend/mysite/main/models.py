@@ -39,7 +39,7 @@ class Book(models.Model):
     rack_number = models.IntegerField()
     number_of_copies = models.IntegerField(default=0)
     id_discount = models.ForeignKey(Discount, on_delete=models.CASCADE, blank=True, null=True)
-    discounted_price = models.FloatField()
+    discounted_price = models.FloatField(null=True)
     description = models.CharField(max_length=255)
 
     class Meta:
