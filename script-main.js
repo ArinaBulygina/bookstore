@@ -123,9 +123,10 @@ window.onclick = function(event) {
     }
 }
 
+let alldata = [];
 document.getElementById('btn_add_book').addEventListener('submit', async function(event) {
    event.preventDefault();
-   Messages.innerHTML = 'Привет!!!!';
+   Messages.innerHTML = '';
 
    const title = document.getElementById('name-book').value.trim();
    const publishing = document.getElementById('publishing-book').value.trim();
@@ -146,7 +147,7 @@ document.getElementById('btn_add_book').addEventListener('submit', async functio
       };
    });
 
-   const regNumbersArr = reg_numbersStr.split(',').map(number => number.trim());
+   const regNumbersArr = reg_numbersStr ? reg_numbersStr.split(',').map(number => number.trim()) : [];
 
    const data = {
       title,
@@ -171,7 +172,8 @@ document.getElementById('btn_add_book').addEventListener('submit', async functio
       }
 
       const result = await response.json();
-      populateTable(result);
+      alldata = result;
+      populateTable(alldata);
       Messages.innerHTML = 'Книга успешно добавлена!'
    } catch (error) {
       console.error('Ошибка:', error);
