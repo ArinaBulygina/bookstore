@@ -161,7 +161,7 @@ document.getElementById('btn_add_book').addEventListener('click', async function
       book_numbers: regNumbersArr,
    };
    try {
-      const response = await fetch('', { // заменить URL
+      const response = await fetch('http://127.0.0.1:8000/book/add/', { // заменить URL
          method: 'POST',
          headers: { 'Content-Type': 'application/json' },
          body: JSON.stringify(data)
@@ -172,7 +172,7 @@ document.getElementById('btn_add_book').addEventListener('click', async function
       }
 
       const result = await response.json();
-      alldata = result;
+      alldata = Array.isArray(result) ? result : [];
       populateTable(alldata);
       Messages.innerHTML = 'Книга успешно добавлена!'
    } catch (error) {
