@@ -107,3 +107,74 @@ function populateTable(data) {
       tableBody.appendChild(row);
    });
 }
+
+var modal = document.getElementById("myModal-add");
+var btn = document.getElementById("openModalBtn");
+var span = document.getElementsByClassName("close")[0];
+btn.onclick = function() {
+    modal.style.display = "block";
+}
+span.onclick = function() {
+    modal.style.display = "none";
+}
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+
+document.getElementById('btn_add_book').addEventListener('submit', async function(event) {
+   event.preventDefault();
+   errorMessages.innerHTML = '';
+
+   const title = document.getElementById('name-book').value.trim();
+   const publishing = document.getElementById('publishing-book').value.trim();
+   const price = document.getElementById('price-book').value.trim();
+   const rack_number = document.getElementById('rack-number-book').value.trim();
+   const description = document.getElementById('description-book').value.trim(); 
+   const genre = document.getElementById('genre-book').value.trim();
+   const name_of_discount = document.getElementById('name-of-discount-book').value.trim();
+   const authorsStr = document.getElementById('authors-book').value.trim();
+   const reg_numbersStr = document.getElementById('reg-numbers-book').value.trim();
+
+   const authorsArr = authorsStr.split(',').map(author => {
+      const parts = author.trim().split(' ');
+      return {
+         author_last_name: parts[0] || '',
+         author_first_name: parts[1] || '',
+         author_patronymic: parts[2] || null
+      };
+   });
+
+   const regNumbersArr = reg_numbersStr.split(',').map(number => number.trim());
+
+   const data = {
+      title,
+      publishing,
+      price,
+      genre,
+      rack_number,
+      description,
+      discount: name_of_discount,
+      authors: authorsArr,
+      book_numbers: regNumbersArr,
+   };
+   try {
+      const response = await fetch('', { // заменить URL
+         method: 'POST',
+         headers: { 'Content-Type': 'application/json' },
+         body: JSON.stringify(data)
+      });
+
+      if (!response.ok) {
+         throw new Error('Ошибка сети');
+      }
+
+      const result = await response.json();
+      populateTable(result);
+      Messages.innerHTML = 'Книга успешно добавлена!'
+   } catch (error) {
+      console.error('Ошибка:', error);
+      Messages.innerHTML = 'Ошибка при отправке данных';
+   }
+});
