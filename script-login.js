@@ -29,6 +29,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
          const data = await response.json();
          console.log("Авторизация успешна:", data);
+         window.location.href = "main.html"
       } catch (error) {
          console.error("Ошибка:", error);
          errorMessages.innerHTML = "Не удалось авторизоваться. Проверьте данные.";
