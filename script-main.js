@@ -125,7 +125,7 @@ window.onclick = function(event) {
 
 document.getElementById('btn_add_book').addEventListener('submit', async function(event) {
    event.preventDefault();
-   errorMessages.innerHTML = '';
+   Messages.innerHTML = 'Привет!!!!';
 
    const title = document.getElementById('name-book').value.trim();
    const publishing = document.getElementById('publishing-book').value.trim();
