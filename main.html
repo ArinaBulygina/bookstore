@@ -27,7 +27,7 @@
       <div class="menu">
          <h1>Меню</h1>
          <button class="btn-menu" style="margin-top: -10px;">Редактировать книгу</button>
-         <button class="btn-menu">Добавить книгу</button>
+         <button class="btn-menu" id="openModalBtn">Добавить книгу</button>
          <button class="btn-menu">Удалить книгу</button>
          <button class="btn-menu">Сформировать отчет</button>
          <button class="btn-menu" style="margin-bottom: 11px;">Выбрать для продажи</button>
@@ -57,6 +57,25 @@
             </tbody>
          </table> 
       </div>
+      </div>
+   </div>
+   <div id="myModal-add" class="modal-add">
+      <div class="modal-content">
+         <span class="close">&times;</span>
+         <h1>Добавить книгу</h1>
+         <div class="modal-add-inf">
+            <input class="input-add-book" id="name-book" type="text" placeholder="Название" required>
+            <input class="input-add-book" id="publishing-book" type="text" placeholder="Издательство" required>
+            <input class="input-add-book" id="price-book" type="number" placeholder="Цена" required>
+            <input class="input-add-book" id="rack-number-book" type="number" placeholder="Номер стеллажа" required>
+            <input class="input-add-book" id="description-book" type="text" placeholder="Описание книги" required>
+            <input class="input-add-book" id="genre-book" type="text" placeholder="Жанр" required>
+            <input class="input-add-book" id="name-of-discount-book" type="text" placeholder="Название скидки">
+            <input class="input-add-book" id="authors-book" type="text" placeholder="Авторы" required>
+            <input class="input-add-book" id="reg-numbers-book" type="text" placeholder="Регистрационные номера" required>
+         </div>
+         <button class="btn-add-book" id="btn_add_book" type="submit">Добавить книгу</button>
+         <div class='Messages' id="Messages"></div>
       </div>
    </div>
    <script src="script-main.js"></script>
