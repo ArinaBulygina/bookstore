@@ -124,7 +124,7 @@ window.onclick = function(event) {
 }
 
 let alldata = [];
-document.getElementById('btn_add_book').addEventListener('submit', async function(event) {
+document.getElementById('btn_add_book').addEventListener('click', async function(event) {
    event.preventDefault();
    Messages.innerHTML = '';
 
