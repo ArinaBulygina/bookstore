@@ -82,9 +82,10 @@ class AddBookView(APIView):
         # Получаем скидку по ее имени, если она указана
         discount = None
         discounted_price = None
+        price = float(data['price'])
         if 'discount' in data:
             discount = get_object_or_404(Discount, name_of_discount=data['discount'])
-            discounted_price = data['price'] - (discount.discount_percentage / 100 * data['price'])
+            discounted_price = price - (discount.discount_percentage / 100 * price)
 
         # Создаем новую запись книги
         book = Book.objects.create(
