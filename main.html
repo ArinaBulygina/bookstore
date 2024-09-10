@@ -26,7 +26,7 @@
       <img src="menu.png" alt="меню" class="icon-menu">
       <div class="menu">
          <h1>Меню</h1>
-         <button class="btn-menu" style="margin-top: -10px;">Редактировать книгу</button>
+         <button class="btn-menu" style="margin-top: -10px;" id="openModalBtn-update">Редактировать книгу</button>
          <button class="btn-menu" id="openModalBtn">Добавить книгу</button>
          <button class="btn-menu">Удалить книгу</button>
          <button class="btn-menu">Сформировать отчет</button>
@@ -61,7 +61,7 @@
    </div>
    <div id="myModal-add" class="modal-add">
       <div class="modal-content">
-         <span class="close">&times;</span>
+         <span class="close-add">&times;</span>
          <h1>Добавить книгу</h1>
          <div class="modal-add-inf">
             <input class="input-add-book" id="name-book" type="text" placeholder="Название" required>
@@ -75,6 +75,25 @@
             <input class="input-add-book" id="reg-numbers-book" type="text" placeholder="Регистрационные номера" required>
          </div>
          <button class="btn-add-book" id="btn_add_book" type="click">Добавить книгу</button>
+         <div class='Messages' id="Messages"></div>
+      </div>
+   </div>
+   <div id="myModal-update" class="modal-update">
+      <div class="modal-content">
+         <span class="close-update">&times;</span>
+         <h1>Редактировать книгу</h1>
+         <div class="modal-update-inf">
+            <input class="input-update-book" id="name-book-update" type="text" placeholder="Название" required>
+            <input class="input-update-book" id="publishing-book-update" type="text" placeholder="Издательство" required>
+            <input class="input-update-book" id="price-book-update" type="number" placeholder="Цена" required>
+            <input class="input-update-book" id="rack-number-book-update" type="number" placeholder="Номер стеллажа" required>
+            <input class="input-update-book" id="description-book-update" type="text" placeholder="Описание книги" required>
+            <input class="input-update-book" id="genre-book-update" type="text" placeholder="Жанр" required>
+            <input class="input-update-book" id="name-of-discount-book-update" type="text" placeholder="Название скидки">
+            <input class="input-update-book" id="authors-book-update" type="text" placeholder="Авторы" required>
+            <input class="input-update-book" id="reg-numbers-book-update" type="text" placeholder="Регистрационные номера" required>
+         </div>
+         <button class="btn-update-book" id="btn_update_book" type="click">Редактировать книгу</button>
          <div class='Messages' id="Messages"></div>
       </div>
    </div>
