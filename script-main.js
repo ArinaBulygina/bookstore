@@ -104,13 +104,30 @@ function populateTable(data) {
          cell.style.whiteSpace = "normal";
       });
 
+      row.addEventListener('click', function() {
+         openModalWithBookData(item);
+      });
+
       tableBody.appendChild(row);
    });
 }
 
+function openModalWithBookData(bookData) {
+   document.getElementById('name-book-update').value = bookData.title;
+   document.getElementById('publishing-book-update').value = bookData.publishing;
+   document.getElementById('price-book-update').value = bookData.price;
+   document.getElementById('rack-number-book-update').value = bookData.rack_number;
+   document.getElementById('description-book-update').value = bookData.description;
+   document.getElementById('genre-book-update').value = bookData.genre.name_of_genre;
+   document.getElementById('name-of-discount-book-update').value = bookData.discount && bookData.discount.name_of_discount ? bookData.discount.name_of_discount : '';
+   document.getElementById('authors-book-update').value = bookData.authors;
+
+   document.getElementById('myModal-update').style.display = 'block';
+}
+
 var modal = document.getElementById("myModal-add");
 var btn = document.getElementById("openModalBtn");
-var span = document.getElementsByClassName("close")[0];
+var span = document.getElementsByClassName("close-add")[0];
 btn.onclick = function() {
     modal.style.display = "block";
 }
@@ -180,3 +197,18 @@ document.getElementById('btn_add_book').addEventListener('click', async function
       Messages.innerHTML = 'Ошибка при отправке данных';
    }
 });
+
+var modal_up = document.getElementById("myModal-update");
+var btn_up = document.getElementById("openModalBtn-update");
+var span_up = document.getElementsByClassName("close-update")[0];
+btn_up.onclick = function() {
+   modal_up.style.display = "block";
+}
+span_up.onclick = function() {
+   modal_up.style.display = "none";
+}
+window.onclick = function(event) {
+   if (event.target == modal_up) {
+      modal_up.style.display = "none";
+   }
+}
