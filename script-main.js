@@ -43,6 +43,8 @@ function performSearch(query) {
    populateTable(filteredData);
 }
 
+let selectedBook = null;
+
 function populateTable(data) {
    const tableBody = document.getElementById('data-table').querySelector('tbody');
    tableBody.innerHTML = '';
@@ -105,7 +107,7 @@ function populateTable(data) {
       });
 
       row.addEventListener('click', function() {
-         openModalWithBookData(item);
+         selectedBook = item; 
       });
 
       tableBody.appendChild(row);
@@ -113,16 +115,23 @@ function populateTable(data) {
 }
 
 function openModalWithBookData(bookData) {
-   document.getElementById('name-book-update').value = bookData.title;
-   document.getElementById('publishing-book-update').value = bookData.publishing;
-   document.getElementById('price-book-update').value = bookData.price;
-   document.getElementById('rack-number-book-update').value = bookData.rack_number;
-   document.getElementById('description-book-update').value = bookData.description;
-   document.getElementById('genre-book-update').value = bookData.genre.name_of_genre;
-   document.getElementById('name-of-discount-book-update').value = bookData.discount && bookData.discount.name_of_discount ? bookData.discount.name_of_discount : '';
-   document.getElementById('authors-book-update').value = bookData.authors;
-
-   document.getElementById('myModal-update').style.display = 'block';
+   if (bookData) {  // Проверка, что книга выбрана
+      document.getElementById('name-book-update').value = bookData.title;
+      document.getElementById('publishing-book-update').value = bookData.publishing;
+      document.getElementById('price-book-update').value = bookData.price;
+      document.getElementById('rack-number-book-update').value = bookData.rack_number;
+      document.getElementById('description-book-update').value = bookData.description;
+      document.getElementById('genre-book-update').value = bookData.genre.name_of_genre;
+      document.getElementById('name-of-discount-book-update').value = bookData.discount && bookData.discount.name_of_discount ? bookData.discount.name_of_discount : '';
+      document.getElementById('authors-book-update').value = bookData.authors;
+      document.getElementById('myModal-update').style.display = 'block';
+   } else {
+      Swal.fire({
+         icon: 'warning',
+         title: 'Ошибка',
+         text: 'Пожалуйста, выберите книгу для редактирования.'
+      });
+   }
 }
 
 var modal = document.getElementById("myModal-add");
@@ -202,7 +211,7 @@ var modal_up = document.getElementById("myModal-update");
 var btn_up = document.getElementById("openModalBtn-update");
 var span_up = document.getElementsByClassName("close-update")[0];
 btn_up.onclick = function() {
-   modal_up.style.display = "block";
+   openModalWithBookData(selectedBook);
 }
 span_up.onclick = function() {
    modal_up.style.display = "none";
