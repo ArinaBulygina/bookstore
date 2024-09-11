@@ -126,12 +126,12 @@ btn.onclick = function() {
 }
 // закрытие модального окна добавления книги
 span.onclick = function() {
-    modal.style.display = "none";
+   modal.style.display = "none";
 }
 window.onclick = function(event) {
-    if (event.target == modal) {
-        modal.style.display = "none";
-    }
+   if (event.target == modal) {
+      modal.style.display = "none";
+   }
 }
 
 // обработчик нажатия кнопки "Добавить книгу" на модальном окне
@@ -274,7 +274,7 @@ document.getElementById('btn_update_book').addEventListener('click', async funct
       book_numbers: regNumbersArr,
    };
    try {
-      const response = await fetch('selectedBook.id_book', { // заменить URL
+      const response = await fetch(`http://127.0.0.1:8000/book/${selectedBook.id_book}/update/`, { // заменить URL
          method: 'POST',
          headers: { 'Content-Type': 'application/json' },
          body: JSON.stringify(data)
@@ -291,5 +291,81 @@ document.getElementById('btn_update_book').addEventListener('click', async funct
    } catch (error) {
       console.error('Ошибка:', error);
       Messages_update.innerHTML = 'Ошибка при отправке данных';
+   }
+});
+
+var modal_del = document.getElementById("myModal-delete");
+var btn_del = document.getElementById("openModalBtn-delete");
+var span_del = document.getElementsByClassName("close-delete")[0];
+// открытие модального окна удаления книги с данными о книге
+btn_del.onclick = function() {
+   if (Number(selectedBook.number_of_copies) == 0) {
+      openModalDelete(selectedBook);
+   } else {
+      Swal.fire({
+         icon: 'warning',
+         title: 'Ошибка',
+         text: 'Книгу нельзя удалить, так как есть непроданные экземпляры.'
+      });
+   }
+}
+
+// закрытие модального окна удаления книги
+span_del.onclick = function() {
+   modal_del.style.display = "none";
+   selectedBook = null;
+}
+window.onclick = function(event) {
+   if (event.target == modal_del) {
+      modal_del.style.display = "none";
+      selectedBook = null;
+   }
+}
+
+// функция автоматического заполнения input-ов в модальном окне для удаления книг
+function openModalDelete(bookData) {
+   if (bookData) {
+      document.getElementById('name-book-delete').value = bookData.title;
+      document.getElementById('publishing-book-delete').value = bookData.publishing;
+      document.getElementById('price-book-delete').value = bookData.price;
+      document.getElementById('rack-number-book-delete').value = bookData.rack_number;
+      document.getElementById('description-book-delete').value = bookData.description;
+      document.getElementById('genre-book-delete').value = bookData.genre.name_of_genre;
+      document.getElementById('name-of-discount-book-delete').value = bookData.discount && bookData.discount.name_of_discount ? bookData.discount.name_of_discount : '';
+      const authorsString = bookData.authors.map(author => `${author.author_last_name} ${author.author_first_name}`).join(', ');
+      document.getElementById('authors-book-delete').value = authorsString;;
+      document.getElementById('myModal-delete').style.display = 'block';
+   } else {
+      Swal.fire({
+         icon: 'warning',
+         title: 'Ошибка',
+         text: 'Пожалуйста, выберите книгу для редактирования.'
+      });
+   }
+}
+
+// обработчик нажатия кнопки "Удалить книгу" в модальном окне
+let AllData = [];
+document.getElementById('btn_delete_book').addEventListener('click', async function(event) {
+   event.preventDefault();
+   Messages_delete.innerHTML = '';
+
+   try {
+      const response = await fetch(`http://127.0.0.1:8000/books/${selectedBook.id_book}//`, {
+         method: 'DELETE',
+         headers: { 'Content-Type': 'application/json' },
+      });
+
+      if (!response.ok) {
+         throw new Error('Ошибка сети');
+      }
+
+      const result = await response.json();
+      AllData = Array.isArray(result) ? result : [];
+      populateTable(AllData);
+      Messages_delete.innerHTML = 'Книга успешно удалена!'
+   } catch (error) {
+      console.error('Ошибка:', error);
+      Messages_delete.innerHTML = 'Ошибка :(';
    }
 });
