@@ -1,3 +1,4 @@
+// обработчик загрузки страницы
 document.addEventListener('DOMContentLoaded', function() {
    loadData();
 
@@ -9,6 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
+// запрос к серверу на получение данных о всех книгах
 let allData = []; 
 async function loadData() {
    try {
@@ -26,6 +28,7 @@ async function loadData() {
    }
 }
 
+// функция для поиска книг
 function performSearch(query) {
    const lowerCaseQuery = query.toLowerCase();
       const filteredData = allData.filter(item => {
@@ -43,8 +46,8 @@ function performSearch(query) {
    populateTable(filteredData);
 }
 
+// функция заполнения таблицы с книгами данными с сервера
 let selectedBook = null;
-
 function populateTable(data) {
    const tableBody = document.getElementById('data-table').querySelector('tbody');
    tableBody.innerHTML = '';
@@ -114,32 +117,14 @@ function populateTable(data) {
    });
 }
 
-function openModalWithBookData(bookData) {
-   if (bookData) {  // Проверка, что книга выбрана
-      document.getElementById('name-book-update').value = bookData.title;
-      document.getElementById('publishing-book-update').value = bookData.publishing;
-      document.getElementById('price-book-update').value = bookData.price;
-      document.getElementById('rack-number-book-update').value = bookData.rack_number;
-      document.getElementById('description-book-update').value = bookData.description;
-      document.getElementById('genre-book-update').value = bookData.genre.name_of_genre;
-      document.getElementById('name-of-discount-book-update').value = bookData.discount && bookData.discount.name_of_discount ? bookData.discount.name_of_discount : '';
-      document.getElementById('authors-book-update').value = bookData.authors;
-      document.getElementById('myModal-update').style.display = 'block';
-   } else {
-      Swal.fire({
-         icon: 'warning',
-         title: 'Ошибка',
-         text: 'Пожалуйста, выберите книгу для редактирования.'
-      });
-   }
-}
-
 var modal = document.getElementById("myModal-add");
 var btn = document.getElementById("openModalBtn");
 var span = document.getElementsByClassName("close-add")[0];
+// открытие модального окна добавления книги
 btn.onclick = function() {
     modal.style.display = "block";
 }
+// закрытие модального окна добавления книги
 span.onclick = function() {
     modal.style.display = "none";
 }
@@ -149,10 +134,11 @@ window.onclick = function(event) {
     }
 }
 
+// обработчик нажатия кнопки "Добавить книгу" на модальном окне
 let alldata = [];
 document.getElementById('btn_add_book').addEventListener('click', async function(event) {
    event.preventDefault();
-   Messages.innerHTML = '';
+   Messages_add.innerHTML = '';
 
    const title = document.getElementById('name-book').value.trim();
    const publishing = document.getElementById('publishing-book').value.trim();
@@ -200,24 +186,110 @@ document.getElementById('btn_add_book').addEventListener('click', async function
       const result = await response.json();
       alldata = Array.isArray(result) ? result : [];
       populateTable(alldata);
-      Messages.innerHTML = 'Книга успешно добавлена!'
+      Messages_add.innerHTML = 'Книга успешно добавлена!'
    } catch (error) {
       console.error('Ошибка:', error);
-      Messages.innerHTML = 'Ошибка при отправке данных';
+      Messages_add.innerHTML = 'Ошибка при отправке данных';
    }
 });
 
 var modal_up = document.getElementById("myModal-update");
 var btn_up = document.getElementById("openModalBtn-update");
 var span_up = document.getElementsByClassName("close-update")[0];
+// открытие модального окна редактирования книги с данными о книге
 btn_up.onclick = function() {
    openModalWithBookData(selectedBook);
 }
+// закрытие модального окна редактирования книги
 span_up.onclick = function() {
    modal_up.style.display = "none";
+   selectedBook = null;
 }
 window.onclick = function(event) {
    if (event.target == modal_up) {
       modal_up.style.display = "none";
+      selectedBook = null;
    }
 }
+
+// функция автоматического заполнения input-ов в модальном окне для редактирования книг
+function openModalWithBookData(bookData) {
+   if (bookData) {
+      document.getElementById('name-book-update').value = bookData.title;
+      document.getElementById('publishing-book-update').value = bookData.publishing;
+      document.getElementById('price-book-update').value = bookData.price;
+      document.getElementById('rack-number-book-update').value = bookData.rack_number;
+      document.getElementById('description-book-update').value = bookData.description;
+      document.getElementById('genre-book-update').value = bookData.genre.name_of_genre;
+      document.getElementById('name-of-discount-book-update').value = bookData.discount && bookData.discount.name_of_discount ? bookData.discount.name_of_discount : '';
+      const authorsString = bookData.authors.map(author => `${author.author_last_name} ${author.author_first_name}`).join(', ');
+      document.getElementById('authors-book-update').value = authorsString;;
+      document.getElementById('myModal-update').style.display = 'block';
+   } else {
+      Swal.fire({
+         icon: 'warning',
+         title: 'Ошибка',
+         text: 'Пожалуйста, выберите книгу для редактирования.'
+      });
+   }
+}
+
+
+// обработчик нажатия кнопки "Редактировать книгу" в модальном окне
+let Alldata = [];
+document.getElementById('btn_update_book').addEventListener('click', async function(event) {
+   event.preventDefault();
+   Messages_update.innerHTML = '';
+
+   const title = document.getElementById('name-book-update').value.trim();
+   const publishing = document.getElementById('publishing-book-update').value.trim();
+   const price = document.getElementById('price-book-update').value.trim();
+   const rack_number = document.getElementById('rack-number-book-update').value.trim();
+   const description = document.getElementById('description-book-update').value.trim(); 
+   const genre = document.getElementById('genre-book-update').value.trim();
+   const name_of_discount = document.getElementById('name-of-discount-book-update').value.trim();
+   const authorsStr = document.getElementById('authors-book-update').value.trim();
+   const reg_numbersStr = document.getElementById('reg-numbers-book-update').value.trim();
+
+   const authorsArr = authorsStr.split(',').map(author => {
+      const parts = author.trim().split(' ');
+      return {
+         author_last_name: parts[0] || '',
+         author_first_name: parts[1] || '',
+         author_patronymic: parts[2] || null
+      };
+   });
+
+   const regNumbersArr = reg_numbersStr ? reg_numbersStr.split(',').map(number => number.trim()) : [];
+
+   const data = {
+      title,
+      publishing,
+      price,
+      genre,
+      rack_number,
+      description,
+      discount: name_of_discount,
+      authors: authorsArr,
+      book_numbers: regNumbersArr,
+   };
+   try {
+      const response = await fetch('selectedBook.id_book', { // заменить URL
+         method: 'POST',
+         headers: { 'Content-Type': 'application/json' },
+         body: JSON.stringify(data)
+      });
+
+      if (!response.ok) {
+         throw new Error('Ошибка сети');
+      }
+
+      const result = await response.json();
+      Alldata = Array.isArray(result) ? result : [];
+      populateTable(Alldata);
+      Messages_update.innerHTML = 'Книга успешно отредактирована!'
+   } catch (error) {
+      console.error('Ошибка:', error);
+      Messages_update.innerHTML = 'Ошибка при отправке данных';
+   }
+});
