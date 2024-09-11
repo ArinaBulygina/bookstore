@@ -299,13 +299,21 @@ var btn_del = document.getElementById("openModalBtn-delete");
 var span_del = document.getElementsByClassName("close-delete")[0];
 // открытие модального окна удаления книги с данными о книге
 btn_del.onclick = function() {
-   if (Number(selectedBook.number_of_copies) == 0) {
-      openModalDelete(selectedBook);
+   if (selectedBook) {
+      if (Number(selectedBook.number_of_copies) == 0) {
+         openModalDelete(selectedBook);
+      } else {
+         Swal.fire({
+            icon: 'warning',
+            title: 'Ошибка',
+            text: 'Книгу нельзя удалить, так как есть непроданные экземпляры.'
+         });
+      }
    } else {
       Swal.fire({
          icon: 'warning',
          title: 'Ошибка',
-         text: 'Книгу нельзя удалить, так как есть непроданные экземпляры.'
+         text: 'Пожалуйста, выберите книгу для удаления.'
       });
    }
 }
@@ -324,7 +332,6 @@ window.onclick = function(event) {
 
 // функция автоматического заполнения input-ов в модальном окне для удаления книг
 function openModalDelete(bookData) {
-   if (bookData) {
       document.getElementById('name-book-delete').value = bookData.title;
       document.getElementById('publishing-book-delete').value = bookData.publishing;
       document.getElementById('price-book-delete').value = bookData.price;
@@ -335,13 +342,6 @@ function openModalDelete(bookData) {
       const authorsString = bookData.authors.map(author => `${author.author_last_name} ${author.author_first_name}`).join(', ');
       document.getElementById('authors-book-delete').value = authorsString;;
       document.getElementById('myModal-delete').style.display = 'block';
-   } else {
-      Swal.fire({
-         icon: 'warning',
-         title: 'Ошибка',
-         text: 'Пожалуйста, выберите книгу для редактирования.'
-      });
-   }
 }
 
 // обработчик нажатия кнопки "Удалить книгу" в модальном окне
@@ -351,7 +351,7 @@ document.getElementById('btn_delete_book').addEventListener('click', async funct
    Messages_delete.innerHTML = '';
 
    try {
-      const response = await fetch(`http://127.0.0.1:8000/books/${selectedBook.id_book}//`, {
+      const response = await fetch(`http://127.0.0.1:8000/books/${selectedBook.id_book}/`, {
          method: 'DELETE',
          headers: { 'Content-Type': 'application/json' },
       });
