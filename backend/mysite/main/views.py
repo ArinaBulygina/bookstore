@@ -83,7 +83,7 @@ class AddBookView(APIView):
         discount = None
         discounted_price = None
         price = float(data['price'])
-        if 'discount' in data:
+        if ('discount' in data) and (data['discount'] != ""):
             discount = get_object_or_404(Discount, name_of_discount=data['discount'])
             discounted_price = price - (discount.discount_percentage / 100 * price)
 
@@ -138,12 +138,12 @@ class UpdateBookView(APIView):
         if 'genre' in data:
             genre, created = Genre.objects.get_or_create(name_of_genre=data['genre'])
             book.id_genre = genre
-
+        price = float(book.price)
         # Обновляем скидку книги, если она указана
         if 'discount' in data:
             discount = get_object_or_404(Discount, name_of_discount=data['discount'])
             book.id_discount = discount
-            book.discounted_price = book.price - (discount.discount_percentage / 100 * book.price)
+            book.discounted_price = price - (discount.discount_percentage / 100 * price)
 
         # Обновляем другие поля книги, если они указаны в запросе
         book.title = data.get('title', book.title)

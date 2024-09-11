@@ -275,7 +275,7 @@ document.getElementById('btn_update_book').addEventListener('click', async funct
    };
    try {
       const response = await fetch(`http://127.0.0.1:8000/book/${selectedBook.id_book}/update/`, { // заменить URL
-         method: 'POST',
+         method: 'PATCH',
          headers: { 'Content-Type': 'application/json' },
          body: JSON.stringify(data)
       });
