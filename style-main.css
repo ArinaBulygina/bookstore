@@ -43,6 +43,10 @@ header{
    margin-top: 6px;
 }
 
+#resetButton {
+   display: none;
+}
+
 .magnifier{
    position: absolute;
    right: 8px; 
