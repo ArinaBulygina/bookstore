@@ -31,6 +31,7 @@ document.addEventListener('DOMContentLoaded', function() {
    const sortDescButton = document.getElementById('sortDescButton');
    sortDescButton.addEventListener('click', function() {
       const sortedData = sortBooksByPrice(filteredData, 'desc');
+      console.log("sortedData:", sortedData);
       populateTable(sortedData);
    });
 });
@@ -69,6 +70,7 @@ function performSearch(query) {
             authorNames.includes(lowerCaseQuery)
          );
       });
+   console.log('filteredData:', filteredData);
    populateTable(filteredData);
 }
 
@@ -89,7 +91,7 @@ let selectedBooks = [];
 function populateTable(data) {
    const tableBody = document.getElementById('data-table').querySelector('tbody');
    tableBody.innerHTML = '';
-
+   
    data.forEach(item => {
       const row = document.createElement('tr');
       
@@ -463,7 +465,7 @@ function showModal(booksData) {
             <strong>Название:</strong>
             <input type="text" class="input-book" id="title_${book.id_book}" value="${book.title}" readonly>
     
-            <strong>Издательство:</strong>
+            <strong>Регистрационные номера:</strong>
             <input type="text" class="input-book" id="book_numbers_${book.id_book}" value="${book.book_numbers.join(', ')}">
       </div>
       `).join('');
