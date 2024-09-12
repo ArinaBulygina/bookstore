@@ -140,7 +140,7 @@ class UpdateBookView(APIView):
             book.id_genre = genre
         price = float(book.price)
         # Обновляем скидку книги, если она указана
-        if 'discount' in data:
+        if ('discount' in data) and (data['discount'] != ""):
             discount = get_object_or_404(Discount, name_of_discount=data['discount'])
             book.id_discount = discount
             book.discounted_price = price - (discount.discount_percentage / 100 * price)
@@ -193,6 +193,24 @@ class BookListCreateView(generics.ListCreateAPIView):
 class BookRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
+
+    def destroy(self, request, *args, **kwargs):
+        # Получаем объект книги, чтобы убедиться, что он существует
+        instance = self.get_object()
+
+        # Выполняем удаление
+        self.perform_destroy(instance)
+
+        # Получаем полный список оставшихся книг после удаления
+        all_books = Book.objects.all()
+        serializer = BookSerializer(all_books, many=True)
+
+        # Возвращаем список всех книг после удаления
+        return Response({
+            "status": "success",
+            "message": "Book deleted successfully.",
+            "books": serializer.data
+        }, status=status.HTTP_200_OK)
 
 
 # Для Author
