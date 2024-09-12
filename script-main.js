@@ -411,7 +411,7 @@ document.getElementById('select-for-sale').addEventListener('click', async funct
       }
 
       const booksData = await response.json();
-      showModal(booksData);
+      showModal(Array.isArray(booksData) ? booksData : []);
    } catch (error) {
       console.error('Ошибка при получении данных выбранных книг:', error);
    }
@@ -431,7 +431,7 @@ function showModal(booksData) {
     
             <strong>Издательство:</strong>
             <input type="text" class="input-book" id="book_numbers_${book.id_book}" value="${book.book_numbers.join(', ')}">
-        </div>
+      </div>
       `).join('');
    
    modal.classList.add('open');
