@@ -4,6 +4,16 @@ document.addEventListener("DOMContentLoaded", function () {
    const passwordInput = document.getElementById("password");
    const registerButton = document.querySelector(".btn-reg");
 
+   function setCookie(name, value, days) {
+      let expires = "";
+      if (days) {
+          const date = new Date();
+          date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+          expires = "; expires=" + date.toUTCString();
+      }
+      document.cookie = name + "=" + (value || "") + expires + "; path=/";
+   }
+
    loginForm.addEventListener("submit", async function (event) {
       event.preventDefault();
       errorMessages.innerHTML = '';
@@ -29,6 +39,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
          const data = await response.json();
          console.log("Авторизация успешна:", data);
+         setCookie("userId", idValue, 7);
          window.location.href = "main.html"
       } catch (error) {
          console.error("Ошибка:", error);
