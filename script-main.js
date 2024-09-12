@@ -1,17 +1,42 @@
 // обработчик загрузки страницы
 document.addEventListener('DOMContentLoaded', function() {
    loadData();
-
+   
+   // поиск по таблице
    const searchInput = document.getElementById('searchInput');
+   const resetButton = document.getElementById('resetButton');
    searchInput.addEventListener('keypress', function(event) {
       if (event.key === 'Enter') {
          performSearch(searchInput.value);
+         resetButton.style.display = 'inline-block';
       }
-  });
+   });
+
+   // сброс поиска
+   resetButton.addEventListener('click', function() {
+      searchInput.value = ''; 
+      populateTable(allData); 
+      resetButton.style.display = 'none'; 
+      filteredData = allData; 
+   });
+
+   // обработчик кнопки "Сортировка по возрастанию"
+   const sortAscButton = document.getElementById('sortAscButton');
+   sortAscButton.addEventListener('click', function() {
+      const sortedData = sortBooksByPrice(filteredData, 'asc');
+      populateTable(sortedData);
+   });
+
+   // обработчик кнопки "Сортировка по убыванию"
+   const sortDescButton = document.getElementById('sortDescButton');
+   sortDescButton.addEventListener('click', function() {
+      const sortedData = sortBooksByPrice(filteredData, 'desc');
+      populateTable(sortedData);
+   });
 });
 
 // запрос к серверу на получение данных о всех книгах
-let allData = []; 
+let allData = [];
 async function loadData() {
    try {
       const response = await fetch('http://127.0.0.1:8000/book-details/'); // Надо вставить
@@ -28,10 +53,11 @@ async function loadData() {
    }
 }
 
-// функция для поиска книг
+// функция для поиска книг по данным из таблицы
+let filteredData = [];
 function performSearch(query) {
    const lowerCaseQuery = query.toLowerCase();
-      const filteredData = allData.filter(item => {
+      filteredData = allData.filter(item => {
          const authorNames = item.authors.map(author => 
             `${author.author_last_name.toLowerCase()} ${author.author_first_name.toLowerCase()}`
          ).join(' ');
@@ -44,6 +70,17 @@ function performSearch(query) {
          );
       });
    populateTable(filteredData);
+}
+
+// сортировка данных в указанном виде
+function sortBooksByPrice(data, order) {
+   return data.slice().sort((a, b) => {
+       if (order === 'asc') {
+         return a.price - b.price;
+      } else {
+         return b.price - a.price;
+      }
+  });
 }
 
 // функция заполнения таблицы с книгами данными с сервера
@@ -408,7 +445,7 @@ document.getElementById('select-for-sale').addEventListener('click', async funct
       }
 
       const booksData = await response.json();
-      showModal(Array.isArray(booksData) ? booksData : []);
+      showModal(booksData.books);
    } catch (error) {
       console.error('Ошибка при получении данных выбранных книг:', error);
    }
