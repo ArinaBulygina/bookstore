@@ -458,15 +458,18 @@ function showModal(booksData) {
    const modalContent = document.getElementById('modal-content-sell');
    
    modalContent.innerHTML = booksData.map(book => `
-      <div>
-            <strong>ID:</strong>
-            <input type="text" class="input-book" id="id_${book.id_book}" value="${book.id_book}" readonly>
+      <div style="margin: 10px;">
+            <div style="font-size: 16px; color: white;">ID:</div>
+            <input type="text" style="margin: 10px; width: 50%;" class="input-book" id="id_${book.id_book}" value="${book.id_book}" readonly>
     
-            <strong>Название:</strong>
-            <input type="text" class="input-book" id="title_${book.id_book}" value="${book.title}" readonly>
+            <div style="font-size: 16px; color: white;">Название:</div>
+            <input type="text" style="margin: 10px;  width: 50%;" class="input-book" id="title_${book.id_book}" value="${book.title}" readonly>
+
+            <div style="font-size: 16px; color: white;">Цена:</div>
+            <input type="number" style="margin: 10px; width: 50%;" class="input-book" id="price_${book.price_of_sale}" value="${book.price_of_sale}" readonly>
     
-            <strong>Регистрационные номера:</strong>
-            <input type="text" class="input-book" id="book_numbers_${book.id_book}" value="${book.book_numbers.join(', ')}">
+            <div style="font-size: 16px; color: white;">Регистрационные номера:</div>
+            <input type="text" style="margin: 10px; width: 50%;" class="input-book" id="book_numbers_${book.id_book}" value="${book.book_numbers.join(', ')}">
       </div>
       `).join('');
    
@@ -475,13 +478,81 @@ function showModal(booksData) {
    var span_sell = document.getElementsByClassName("close-sell")[0];
    span_sell.onclick = function() {
       modal.style.display = "none";
-      selectedBooks = null;
+      selectedBooks = [];
    }
 
    window.onclick = function(event) {
       if (event.target == modal) {
          modal.style.display = "none";
-         selectedBooks = null;
+         selectedBooks = [];
       }
    }
 }
+
+function getCookie(name) {
+   const nameEQ = name + "=";
+   const ca = document.cookie.split(';');
+   for(let i = 0; i < ca.length; i++) {
+       let c = ca[i];
+       while (c.charAt(0) === ' ') {
+           c = c.substring(1, c.length);
+       }
+       if (c.indexOf(nameEQ) === 0) {
+           return c.substring(nameEQ.length, c.length);
+       }
+   }
+   return null;
+}
+
+const userId = getCookie("userId");
+
+// Обработчик событий для кнопки "Продать"
+let AllDatas = [];
+document.getElementById('sell-books').addEventListener('click', async function() {
+    const booksToSell = [];
+    Messages_sell.innerHTML = ''
+
+    // Получение всех блоков, содержащих информацию о каждой книге
+    const bookBlocks = document.querySelectorAll('#modal-content-sell > div');
+
+    bookBlocks.forEach(block => {
+        const bookNumberInput = block.querySelector('input[id^="book_numbers_"]');
+        const priceInput = block.querySelector('input[id^="price_"]');
+
+        // Получение данных книги
+        const bookNumber = bookNumberInput.value.split(',').map(num => num.trim());
+        const priceOfSale = parseFloat(priceInput.value);
+
+        // Создание объекта для каждой книги и добавление в массив
+        bookNumber.forEach(number => {
+            booksToSell.push({
+                book_number: number,
+                id_seller: userId,
+                price_of_sale: priceOfSale
+            });
+        });
+    });
+
+    try {
+        // Отправка данных на сервер
+        const response = await fetch('', { //добавить!!!!
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(booksToSell)
+        });
+
+        if (!response.ok) {
+            throw new Error(`Ошибка: ${response.status}`);
+        }
+
+        const result = await response.json();
+        AllDatas = Array.isArray(result) ? result : [];
+        populateTable(AllDatas);
+        Messages_sell.innerHTML = 'Книги успешно проданы!'
+    } catch (error) {
+        console.error('Ошибка при продаже книг:', error);
+        Messages_sell.innerHTML = 'Ошибка :(';
+    }
+});
