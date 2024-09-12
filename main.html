@@ -30,7 +30,7 @@
          <button class="btn-menu" id="openModalBtn">Добавить книгу</button>
          <button class="btn-menu" id="openModalBtn-delete">Удалить книгу</button>
          <button class="btn-menu">Сформировать отчет</button>
-         <button class="btn-menu" style="margin-bottom: 11px;">Выбрать для продажи</button>
+         <button class="btn-menu" id="select-for-sale" style="margin-bottom: 11px;">Выбрать для продажи</button>
       </div>
       </div>
       <div class="t-c-i">
@@ -115,6 +115,13 @@
          <button class="btn-book" id="btn_delete_book" type="click">Удалить книгу</button>
          <div class='Messages' id="Messages_delete"></div>
       </div>
+   </div>
+   <div id="modal" class="modal">
+      <h2>Выбранные книги для продажи</h2>
+      <span class="close-sell">&times;</span>
+      <div id="modal-content-sell">
+      </div>
+      <button id="sell-books" class="btn-book">Продать</button>
    </div>
    <script src="script-main.js"></script>
    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
