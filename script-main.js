@@ -384,9 +384,6 @@ document.getElementById('btn_delete_book').addEventListener('click', async funct
 });
 
 
-
-
-
 document.getElementById('select-for-sale').addEventListener('click', async function() {
    if (selectedBooks.length === 0) {
       Swal.fire({
@@ -434,17 +431,17 @@ function showModal(booksData) {
       </div>
       `).join('');
    
-   modal.classList.add('open');
+   modal.style.display = "block";
 
    var span_sell = document.getElementsByClassName("close-sell")[0];
    span_sell.onclick = function() {
-      modal.classList.remove('open');
+      modal.style.display = "none";
       selectedBooks = null;
    }
 
    window.onclick = function(event) {
       if (event.target == modal) {
-         modal.classList.remove('open');
+         modal.style.display = "none";
          selectedBooks = null;
       }
    }
