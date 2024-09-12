@@ -160,13 +160,13 @@ h1 {
    border-radius: 12px;
 }
 
-#data-table {
+.data-table {
    width: 100%; 
    border-collapse: collapse;
    max-height: 530px;
 }
 
-#data-table thead th {
+.data-table thead th {
    background-color: #676969; 
    padding: 10px; 
    border-left: 1px solid white; 
@@ -185,7 +185,7 @@ thead th:last-child {
    border-top-right-radius: 15px; 
 }
 
-#data-table tbody td {
+.data-table tbody td {
    border: 1px solid #545050; 
    text-align: center; 
    background: white;
