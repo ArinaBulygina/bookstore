@@ -38,7 +38,7 @@
       <div class="t-c-i">
          <img src="table.png" alt="таблица" class="icon-table">
       <div class="table-container">
-         <table id="data-table">
+         <table id="data-table" class="data-table">
             <thead>
                <tr>
                <th style="width: 40px;">ID</th>
@@ -128,6 +128,28 @@
             </div>
          </div>
          <button id="sell-books" class="btn-book">Продать</button>
+         <div class='Messages' id="Messages_sell"></div>
+      </div>
+   </div>
+   <div id="myModal-report" class="modal"></div>
+      <div class="modal-content">
+         <span class="close-delete">&times;</span>
+         <h1>Отчет по продажам</h1>
+         <div class="table-container">
+            <table id="data-table-report" class="data-table">
+               <thead>
+                  <tr>
+                  <th >ID продажи</th>
+                  <th >Номер книги</th>
+                  <th >ID продавца</th>
+                  <th >Дата продажи</th>
+                  <th style="width: 100px;">Цена продажи</th>
+                  </tr>
+               </thead>
+               <tbody>             
+               </tbody>
+            </table> 
+         </div>
       </div>
    </div>
    <script src="script-main.js"></script>
