@@ -424,13 +424,13 @@ function showModal(booksData) {
    modalContent.innerHTML = booksData.map(book => `
       <div>
             <strong>ID:</strong>
-            <input type="text" id="id_${book.id_book}" value="${book.id_book}" readonly>
+            <input type="text" class="input-book" id="id_${book.id_book}" value="${book.id_book}" readonly>
     
             <strong>Название:</strong>
-            <input type="text" id="title_${book.id_book}" value="${book.title}" readonly>
+            <input type="text" class="input-book" id="title_${book.id_book}" value="${book.title}" readonly>
     
             <strong>Издательство:</strong>
-            <input type="text" id="book_numbers_${book.id_book}" value="${book.book_numbers.join(', ')}">
+            <input type="text" class="input-book" id="book_numbers_${book.id_book}" value="${book.book_numbers.join(', ')}">
         </div>
       `).join('');
    
