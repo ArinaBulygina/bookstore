@@ -48,6 +48,7 @@ function performSearch(query) {
 
 // функция заполнения таблицы с книгами данными с сервера
 let selectedBook = null;
+let selectedBooks = [];
 function populateTable(data) {
    const tableBody = document.getElementById('data-table').querySelector('tbody');
    tableBody.innerHTML = '';
@@ -111,6 +112,18 @@ function populateTable(data) {
 
       row.addEventListener('click', function() {
          selectedBook = item; 
+      });
+
+      row.addEventListener('click', function() {
+         const index = selectedBooks.indexOf(item.id_book);
+
+         if (index > -1) { // книга уже выбрана, убираем
+            selectedBooks.splice(index, 1);
+            row.classList.remove('selected');
+         } else { // книга не выбрана, добавляем
+            selectedBooks.push(item.id_book);
+            row.classList.add('selected');
+         }
       });
 
       tableBody.appendChild(row);
@@ -299,13 +312,21 @@ var btn_del = document.getElementById("openModalBtn-delete");
 var span_del = document.getElementsByClassName("close-delete")[0];
 // открытие модального окна удаления книги с данными о книге
 btn_del.onclick = function() {
-   if (Number(selectedBook.number_of_copies) == 0) {
-      openModalDelete(selectedBook);
+   if (selectedBook) {
+      if (Number(selectedBook.number_of_copies) == 0) {
+         openModalDelete(selectedBook);
+      } else {
+         Swal.fire({
+            icon: 'warning',
+            title: 'Ошибка',
+            text: 'Книгу нельзя удалить, так как есть непроданные экземпляры.'
+         });
+      }
    } else {
       Swal.fire({
          icon: 'warning',
          title: 'Ошибка',
-         text: 'Книгу нельзя удалить, так как есть непроданные экземпляры.'
+         text: 'Пожалуйста, выберите книгу для удаления.'
       });
    }
 }
@@ -369,3 +390,70 @@ document.getElementById('btn_delete_book').addEventListener('click', async funct
       Messages_delete.innerHTML = 'Ошибка :(';
    }
 });
+
+
+
+
+
+document.getElementById('select-for-sale').addEventListener('click', async function() {
+   if (selectedBooks.length === 0) {
+      Swal.fire({
+         icon: 'warning',
+         title: 'Ошибка',
+         text: 'Пожалуйста, выберите книги для продажи.'
+      });
+      return;
+   }
+
+   try {
+      const response = await fetch('', { //добавить!!!!!!!!!!!!!!!!!!
+         method: 'POST',
+         headers: {
+            'Content-Type': 'application/json'
+         },
+         body: JSON.stringify({ book_ids: selectedBooks })
+      });
+
+      if (!response.ok) {
+         throw new Error(`Ошибка: ${response.status}`);
+      }
+
+      const booksData = await response.json();
+      showModal(booksData);
+   } catch (error) {
+      console.error('Ошибка при получении данных выбранных книг:', error);
+   }
+});
+
+function showModal(booksData) {
+   const modal = document.getElementById('modal');
+   const modalContent = document.getElementById('modal-content-sell');
+   
+   modalContent.innerHTML = booksData.map(book => `
+      <div>
+            <strong>ID:</strong>
+            <input type="text" id="id_${book.id_book}" value="${book.id_book}" readonly>
+    
+            <strong>Название:</strong>
+            <input type="text" id="title_${book.id_book}" value="${book.title}" readonly>
+    
+            <strong>Издательство:</strong>
+            <input type="text" id="book_numbers_${book.id_book}" value="${book.book_numbers.join(', ')}">
+        </div>
+      `).join('');
+   
+   modal.classList.add('open');
+
+   var span_sell = document.getElementsByClassName("close-sell")[0];
+   span_sell.onclick = function() {
+      modal.classList.remove('open');
+      selectedBooks = null;
+   }
+
+   window.onclick = function(event) {
+      if (event.target == modal) {
+         modal.classList.remove('open');
+         selectedBooks = null;
+      }
+   }
+}
