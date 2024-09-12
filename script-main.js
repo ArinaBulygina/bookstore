@@ -398,7 +398,7 @@ document.getElementById('select-for-sale').addEventListener('click', async funct
    }
 
    try {
-      const response = await fetch('', { //добавить!!!!!!!!!!!!!!!!!!
+      const response = await fetch('http://127.0.0.1:8000/book-infforsale/', { //добавить!!!!!!!!!!!!!!!!!!
          method: 'POST',
          headers: {
             'Content-Type': 'application/json'
@@ -411,7 +411,7 @@ document.getElementById('select-for-sale').addEventListener('click', async funct
       }
 
       const booksData = await response.json();
-      showModal(booksData);
+      showModal(Array.isArray(booksData) ? booksData : []);
    } catch (error) {
       console.error('Ошибка при получении данных выбранных книг:', error);
    }
