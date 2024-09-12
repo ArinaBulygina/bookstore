@@ -6,7 +6,8 @@ from .views import (SellerListCreateView, SellerRetrieveUpdateDestroyView, BookL
                     GenreListCreateView, GenreRetrieveUpdateDestroyView, DiscountListCreateView,
                     DiscountRetrieveUpdateDestroyView, SaleListCreateView, SaleRetrieveUpdateDestroyView,
                     AuthorsOfBookListCreateView, AuthorsOfBookRetrieveUpdateDestroyView, BookNumberListCreateView,
-                    BookNumberRetrieveUpdateDestroyView, BookDetailsView, UpdateLastDeauthorizationView, UpdateBookView, AddBookView)
+                    BookNumberRetrieveUpdateDestroyView, BookDetailsView, UpdateLastDeauthorizationView, UpdateBookView,
+                    AddBookView, BookInfForSaleView)
 
 urlpatterns = [
     path('register/', SellerRegistrationView.as_view(), name='seller-registration'),
@@ -14,6 +15,7 @@ urlpatterns = [
     path('book-details/', BookDetailsView.as_view(), name='book-details'),
     path('book/add/', AddBookView.as_view(), name='add_book'),
     path('book/<int:id_book>/update/', UpdateBookView.as_view(), name='update_book'),
+    path('book-infforsale/', BookInfForSaleView.as_view(), name='book-infforsale'),
     # Seller
     path('sellers/', SellerListCreateView.as_view(), name='seller-list-create'),
     path('sellers/<int:pk>/', SellerRetrieveUpdateDestroyView.as_view(), name='seller-detail'),

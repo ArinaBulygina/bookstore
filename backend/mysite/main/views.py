@@ -184,6 +184,35 @@ class UpdateBookView(APIView):
                         status=status.HTTP_200_OK)
 
 
+class BookInfForSaleView(APIView):
+    def post(self, request):
+        # Получаем массив id_book из запроса
+        book_ids = request.data.get('book_ids', [])
+
+        if not book_ids:
+            return Response({"error": "No book IDs provided."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Создаем список для хранения данных по книгам
+        books_info = []
+
+        for id_book in book_ids:
+            # Получаем книгу по id
+            book = get_object_or_404(Book, pk=id_book)
+
+            # Получаем номера книг, связанные с данной книгой
+            book_numbers = BookNumber.objects.filter(id_book=book).values_list('book_number', flat=True)
+
+            # Добавляем информацию о книге в список
+            books_info.append({
+                "id_book": book.id_book,
+                "title": book.title,
+                "book_numbers": list(book_numbers)  # Преобразуем QuerySet в список
+            })
+
+        # Возвращаем данные в виде JSON
+        return Response({"books": books_info}, status=status.HTTP_200_OK)
+
+
 # Для Book
 class BookListCreateView(generics.ListCreateAPIView):
     queryset = Book.objects.all()
