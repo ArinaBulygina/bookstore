@@ -1,6 +1,13 @@
 // обработчик загрузки страницы
 document.addEventListener('DOMContentLoaded', function() {
    loadData();
+
+   const urlParams = new URLSearchParams(window.location.search);
+   const userId = urlParams.get('id_seller');
+
+   if (userId) {
+      localStorage.setItem('userId', userId);
+   }
    
    // поиск по таблице
    const searchInput = document.getElementById('searchInput');
@@ -150,25 +157,36 @@ function populateTable(data) {
          cell.style.whiteSpace = "normal";
       });
 
+      let isDoubleClick = false;
+      let clickTimeout;
       row.addEventListener('click', function() {
-         selectedBook = item; 
-      });
-
-      row.addEventListener('click', function() {
-         const index = selectedBooks.indexOf(item.id_book);
-
-         if (index > -1) { // книга уже выбрана, убираем
-            selectedBooks.splice(index, 1);
-            row.classList.remove('selected');
-         } else { // книга не выбрана, добавляем
-            selectedBooks.push(item.id_book);
-            row.classList.add('selected');
+         if (isDoubleClick) {
+            isDoubleClick = false;
+            return; 
          }
+
+         clearTimeout(clickTimeout);
+         clickTimeout = setTimeout(() => {
+            
+            selectedBook = item; 
+
+            const index = selectedBooks.indexOf(item.id_book);
+
+            if (index > -1) { // Книга уже выбрана, убираем
+               selectedBooks.splice(index, 1);
+               row.classList.remove('selected');
+            } else { // Книга не выбрана, добавляем
+               selectedBooks.push(item.id_book);
+               row.classList.add('selected');
+            }
+         }, 300);
       });
 
       row.addEventListener('dblclick', function() {
+         clearTimeout(clickTimeout);
+         isDoubleClick = true;
          selectedBookInf = item;
-         openModalDelete(selectedBookInf)
+         openModalBook(selectedBookInf);
       });
 
       tableBody.appendChild(row);
@@ -428,7 +446,7 @@ document.getElementById('btn_delete_book').addEventListener('click', async funct
    }
 });
 
-
+// обработчик кнопки "Выбрать для продажи"
 document.getElementById('select-for-sale').addEventListener('click', async function() {
    if (selectedBooks.length === 0) {
       Swal.fire({
@@ -495,28 +513,13 @@ function showModal(booksData) {
    }
 }
 
-function getCookie(name) {
-   const nameEQ = name + "=";
-   const ca = document.cookie.split(';');
-   for(let i = 0; i < ca.length; i++) {
-       let c = ca[i];
-       while (c.charAt(0) === ' ') {
-           c = c.substring(1, c.length);
-       }
-       if (c.indexOf(nameEQ) === 0) {
-           return c.substring(nameEQ.length, c.length);
-       }
-   }
-   return null;
-}
-
-const userId = getCookie("userId");
-
 // Обработчик событий для кнопки "Продать"
 let AllDatas = [];
 document.getElementById('sell-books').addEventListener('click', async function() {
     const booksToSell = [];
     Messages_sell.innerHTML = ''
+    const urlParams = new URLSearchParams(window.location.search);
+    const userId = urlParams.get('id_seller');
 
     // Получение всех блоков, содержащих информацию о каждой книге
     const bookBlocks = document.querySelectorAll('#modal-content-sell > div');
@@ -563,6 +566,7 @@ document.getElementById('sell-books').addEventListener('click', async function()
     }
 });
 
+// обрабочкий кнопки "Сформировать отчет"
 let allDataReport = [];
 document.getElementById('openModalBtn-report').addEventListener('click', async function() {
    document.getElementById('myModal-report').style.display = 'block';
@@ -586,6 +590,7 @@ document.getElementById('openModalBtn-report').addEventListener('click', async f
    }
 });
 
+// функция для заполнения таблицы с отчетам по продажам
 function populateTableReport(data) {
    const tableBody = document.getElementById('data-table-report').querySelector('tbody');
    tableBody.innerHTML = '';
@@ -603,7 +608,7 @@ function populateTableReport(data) {
 
       const IdSellerCell = document.createElement('td');
       IdSellerCell.textContent = item.id_seller;
-      row.appendChild(IdSellerCel);
+      row.appendChild(IdSellerCell);
 
       const DateCell = document.createElement('td');
       DateCell.textContent = item.date_of_sale;
@@ -622,6 +627,7 @@ function populateTableReport(data) {
    });
 }
 
+// закрытие модального окна с отчетом по продажам
 var modal_report = document.getElementById("myModal-report");
 var span = document.getElementsByClassName("close-report")[0];
 span.onclick = function() {
@@ -633,7 +639,8 @@ window.onclick = function(event) {
    }
 }
 
-function openModalDelete(selectedBookInf) {
+// функция для заполнения inrut-ов в модальном окне с отдельной книгой
+function openModalBook(selectedBookInf) {
    document.getElementById('id-book-selected').value = selectedBookInf.id_book;
    document.getElementById('name-book-selected').value = selectedBookInf.title;
    document.getElementById('publishing-book-selected').value = selectedBookInf.publishing;
@@ -645,9 +652,12 @@ function openModalDelete(selectedBookInf) {
    document.getElementById('genre-book-selected').value = selectedBookInf.genre.name_of_genre;
    document.getElementById('name-of-discount-book-selected').value = selectedBookInf.discount && selectedBookInf.discount.name_of_discount ? selectedBookInf.discount.name_of_discount : '';
    document.getElementById('discount-book-selected').value = selectedBookInf.discount && selectedBookInf.discount.discount_percentage ? `${selectedBookInf.discount.discount_percentage}%` : '';
-   const authorsString = bookData.authors.map(author => `${author.author_last_name} ${author.author_first_name}`).join(', ');
+   const authorsString = selectedBookInf.authors.map(author => `${author.author_last_name} ${author.author_first_name}`).join(', ');
    document.getElementById('authors-book-selected').value = authorsString;;
    document.getElementById('myModal-book').style.display = 'block';
+
+   const similarBooks = findSimilarBooks(selectedBookInf);
+   populateSimilarBooksTable(similarBooks);
 }
 
 var modal_book = document.getElementById("myModal-book");
@@ -663,3 +673,59 @@ window.onclick = function(event) {
       selectedBookInf = null;
    }
 }
+
+// функция для поиска похожих книг
+function findSimilarBooks(book) {
+   const similarBooks = allData.filter(item => {
+      // Похожие по автору
+      const hasSameAuthor = item.authors.some(author => 
+         book.authors.some(selectedAuthor => 
+            selectedAuthor.author_last_name === author.author_last_name &&
+            selectedAuthor.author_first_name === author.author_first_name
+         )
+      );
+      // Похожие по жанру
+      const hasSameGenre = item.genre.name_of_genre === book.genre.name_of_genre;
+
+      // Можно использовать один из условий или оба для большее приближения
+      return hasSameAuthor || hasSameGenre;
+   });
+
+   return similarBooks;
+}
+
+// функция для заполнения таблицы похожими книгами
+function populateSimilarBooksTable(similarBooks) {
+   const similarBooksTableBody = document.getElementById('similar-books-table').querySelector('tbody'); 
+   similarBooksTableBody.innerHTML = '';
+   similarBooks.forEach(book => {
+      const row = document.createElement('tr');
+      
+      const idCell = document.createElement('td');
+      idCell.textContent = book.id_book;
+      row.appendChild(idCell);
+      
+      const titleCell = document.createElement('td');
+      titleCell.textContent = book.title;
+      row.appendChild(titleCell);
+      
+      const genreCell = document.createElement('td');
+      genreCell.textContent = book.genre.name_of_genre;
+      row.appendChild(genreCell);
+      
+      const authorsCell = document.createElement('td');
+      const authors = book.authors.map(author => `${author.author_last_name} ${author.author_first_name}`).join(', ');
+      authorsCell.textContent = authors;
+      row.appendChild(authorsCell);
+
+      similarBooksTableBody.appendChild(row); 
+   });
+}
+
+// выход со страницы
+const logoutButton = document.getElementById("logoutButton");
+
+logoutButton.addEventListener("click", function() {
+    localStorage.removeItem('userId');
+    window.location.href = "index.html";
+});
