@@ -19,7 +19,7 @@
             <button id="resetButton">Сброс</button>
             <button id="sortAscButton" style="width: 300px;">Сортировка по возрастанию</button>
             <button id="sortDescButton" style="width: 270px;">Сортировка по убыванию</button>
-            <button style="width: 100px;">Выход</button>
+            <button id="logoutButton" style="width: 100px;">Выход</button>
          </div>
       </div>
    </header>
@@ -152,7 +152,7 @@
          </div>
       </div>
    </div>
-   <div id="myModal-book" class="modal"></div>
+   <div id="myModal-book" class="modal">
       <div class="modal-content">
          <span class="close-book">&times;</span>
          <h1>Книга</h1>
@@ -182,6 +182,21 @@
             <input style="padding: 6px; font-size: 14px;" class="input-book" id="discount-book-selected" type="text" placeholder="Скидка" readonly>
             <div class="description-input">Авторы:</div>
             <input style="padding: 6px; font-size: 14px;" class="input-book" id="authors-book-selected" type="text" placeholder="Авторы" readonly>
+            <h1>Подборка похожих книг</h1>
+            <div class="table-container">
+               <table id="similar-books-table" class="data-table">
+                  <thead>
+                     <tr>
+                     <th >ID книги</th>
+                     <th >Название</th>
+                     <th >Жанр</th>
+                     <th >Авторы</th>
+                     </tr>
+                  </thead>
+                  <tbody>             
+                  </tbody>
+               </table> 
+            </div>
          </div>
       </div>
    </div>
