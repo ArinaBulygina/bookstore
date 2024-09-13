@@ -1,5 +1,6 @@
 from django.contrib.auth.hashers import check_password
 from django.shortcuts import get_object_or_404
+from pyasn1.compat.octets import null
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -45,10 +46,20 @@ class LoginView(APIView):
         # Генерация JWT токенов
         refresh = RefreshToken()
         refresh['id_seller'] = user.id_seller
-        return Response({
+        response: Response = Response({
             "refresh": str(refresh),
-            "access": str(refresh.access_token),
+            "access": str(refresh.access_token)
         }, status=status.HTTP_200_OK)
+        response.set_cookie(
+            key="id_seller",
+            value=user.id_seller,
+            path="/",
+            httponly=False,
+            samesite="Lax",
+            secure=False
+        )
+        return response
+
 
 
 # Для Seller
@@ -201,11 +212,16 @@ class BookInfForSaleView(APIView):
 
             # Получаем номера книг, связанные с данной книгой
             book_numbers = BookNumber.objects.filter(id_book=book).values_list('book_number', flat=True)
+            if book.discounted_price is not None:
+                price = book.discounted_price
+            else:
+                price = book.price
 
             # Добавляем информацию о книге в список
             books_info.append({
                 "id_book": book.id_book,
                 "title": book.title,
+                "price": price,
                 "book_numbers": list(book_numbers)  # Преобразуем QuerySet в список
             })
 
@@ -279,6 +295,18 @@ class DiscountRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
 class SaleListCreateView(generics.ListCreateAPIView):
     queryset = Sale.objects.all()
     serializer_class = SaleSerializer
+
+    def create(self, request, *args, **kwargs):
+        # Если получаем список данных (несколько продаж)
+        if isinstance(request.data, list):
+            serializer = self.get_serializer(data=request.data, many=True)
+        else:
+            serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        all_books = Book.objects.all()
+        serializer = BookSerializer(all_books, many=True)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class SaleRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):

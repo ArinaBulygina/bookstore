@@ -482,18 +482,18 @@ function showModal(booksData) {
    const modalContent = document.getElementById('modal-content-sell');
    
    modalContent.innerHTML = booksData.map(book => `
-      <div style="margin: 10px;">
+      <div style="margin: 10px; width: 100%;">
             <div style="font-size: 16px; color: white;">ID:</div>
-            <input type="text" style="margin: 10px; width: 80%;" class="input-book" id="id_${book.id_book}" value="${book.id_book}" readonly>
+            <input type="text" style="margin: 5px; width: 100%;" class="input-book" id="id_${book.id_book}" value="${book.id_book}" readonly>
     
             <div style="font-size: 16px; color: white;">Название:</div>
-            <input type="text" style="margin: 10px;  width: 80%;" class="input-book" id="title_${book.id_book}" value="${book.title}" readonly>
+            <input type="text" style="margin: 5px;  width: 100%;" class="input-book" id="title_${book.id_book}" value="${book.title}" readonly>
 
             <div style="font-size: 16px; color: white;">Цена:</div>
-            <input type="number" style="margin: 10px; width: 80%;" class="input-book" id="price_${book.price}" value="${book.price}" readonly>
+            <input type="number" style="margin: 5px; width: 100%;" class="input-book" id="price_${book.price}" value="${book.price}" readonly>
     
             <div style="font-size: 16px; color: white;">Регистрационные номера:</div>
-            <input type="text" style="margin: 10px; width: 80%;" class="input-book" id="book_numbers_${book.id_book}" value="${book.book_numbers.join(', ')}">
+            <input type="text" style="margin: 5px; width: 100%;" class="input-book" id="book_numbers_${book.id_book}" value="${book.book_numbers.join(', ')}">
       </div>
       `).join('');
    
