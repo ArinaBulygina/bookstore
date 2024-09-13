@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
          const data = await response.json();
          console.log("Авторизация успешна:", data);
-         window.location.href = "main.html"
+         window.location.href = `main.html?id_seller=${idValue}`;
       } catch (error) {
          console.error("Ошибка:", error);
          errorMessages.innerHTML = "Не удалось авторизоваться. Проверьте данные.";
