@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import MaxValueValidator
 
 
 class Seller(models.Model):
@@ -27,7 +28,7 @@ class Genre(models.Model):
 class Discount(models.Model):
     id_discount = models.AutoField(primary_key=True)
     name_of_discount = models.CharField(max_length=100, unique=True)
-    discount_percentage = models.IntegerField()
+    discount_percentage = models.IntegerField(validators=[MaxValueValidator(99)])
 
 
 class Book(models.Model):

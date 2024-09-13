@@ -98,6 +98,14 @@ class AddBookView(APIView):
             discount = get_object_or_404(Discount, name_of_discount=data['discount'])
             discounted_price = price - (discount.discount_percentage / 100 * price)
 
+        # Проверка количества книг на стеллаже
+        rack_number = data['rack_number']
+        existing_books_count = Book.objects.filter(rack_number=rack_number).count()
+
+        if existing_books_count >= 100:
+            return Response({"error": f"Cannot add the book. The rack number {rack_number} is full."},
+                            status=status.HTTP_400_BAD_REQUEST)
+
         # Создаем новую запись книги
         book = Book.objects.create(
             id_genre=genre,
