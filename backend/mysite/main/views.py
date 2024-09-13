@@ -222,6 +222,7 @@ class BookInfForSaleView(APIView):
                 "id_book": book.id_book,
                 "title": book.title,
                 "price": price,
+                "number_of_copies": book.number_of_copies,
                 "book_numbers": list(book_numbers)  # Преобразуем QuerySet в список
             })
 
