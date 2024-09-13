@@ -527,11 +527,11 @@ function showModal(booksData) {
 
 // Обработчик событий для кнопки "Продать"
 let AllDatas = [];
+const urlParams = new URLSearchParams(window.location.search);
+const userId = urlParams.get('id_seller');
 document.getElementById('sell-books').addEventListener('click', async function() {
     const booksToSell = [];
     Messages_sell.innerHTML = ''
-    const urlParams = new URLSearchParams(window.location.search);
-    const userId = urlParams.get('id_seller');
 
     // Получение всех блоков, содержащих информацию о каждой книге
     const bookBlocks = document.querySelectorAll('#modal-content-sell > div');
@@ -738,8 +738,6 @@ function populateSimilarBooksTable(similarBooks) {
 const logoutButton = document.getElementById("logoutButton");
 
 logoutButton.addEventListener("click", async function() {
-    localStorage.removeItem('userId');
-    window.location.href = "index.html";
     try {
       const response = await fetch(`http://127.0.0.1:8000/seller/${userId}/deauthorize/`, { 
          method: 'PATCH',
@@ -758,4 +756,6 @@ logoutButton.addEventListener("click", async function() {
    } catch (error) {
       console.error('Ошибка при получении данных выбранных книг:', error);
    }
+   localStorage.removeItem('userId');
+   window.location.href = "index.html";
 });
