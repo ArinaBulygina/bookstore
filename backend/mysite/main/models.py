@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import MaxValueValidator
 
 
 class Seller(models.Model):
@@ -27,7 +28,7 @@ class Genre(models.Model):
 class Discount(models.Model):
     id_discount = models.AutoField(primary_key=True)
     name_of_discount = models.CharField(max_length=100, unique=True)
-    discount_percentage = models.IntegerField()
+    discount_percentage = models.IntegerField(validators=[MaxValueValidator(99)])
 
 
 class Book(models.Model):
@@ -49,11 +50,12 @@ class Book(models.Model):
 class BookNumber(models.Model):
     book_number = models.CharField(max_length=17, primary_key=True)
     id_book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    status = models.CharField(max_length=10, default="Не продан")
 
 
 class Sale(models.Model):
     id_sale = models.AutoField(primary_key=True)
-    book_number = models.ForeignKey(BookNumber, on_delete=models.CASCADE)
+    book_number = models.ForeignKey(BookNumber, on_delete=models.CASCADE, unique=True)
     id_seller = models.ForeignKey(Seller, on_delete=models.CASCADE)
     date_of_sale = models.DateField(auto_now=True)
     price_of_sale = models.FloatField()
