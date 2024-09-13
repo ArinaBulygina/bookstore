@@ -471,12 +471,24 @@ document.getElementById('select-for-sale').addEventListener('click', async funct
       }
 
       const booksData = await response.json();
-      showModal(booksData.books);
+      if (!booksData.books.some(book => book.number_of_copies === 0)) {
+         showModal(booksData.books);
+      } else {
+         Swal.fire({
+            icon: 'warning',
+            title: 'Ошибка',
+            text: 'Пожалуйста, выберите книги, имеющие экземпляры!'
+         });
+         selectedBooks = [];
+         return;
+      }
+
    } catch (error) {
       console.error('Ошибка при получении данных выбранных книг:', error);
    }
 });
 
+// функция для заполнения модального окна с прожадами
 function showModal(booksData) {
    const modal = document.getElementById('modal');
    const modalContent = document.getElementById('modal-content-sell');
@@ -484,16 +496,16 @@ function showModal(booksData) {
    modalContent.innerHTML = booksData.map(book => `
       <div style="margin: 10px;">
             <div style="font-size: 16px; color: white;">ID:</div>
-            <input type="text" style="margin: 10px; width: 80%;" class="input-book" id="id_${book.id_book}" value="${book.id_book}" readonly>
+            <input type="text" style="margin: 5px; width: 80%;" class="input-book" id="id_${book.id_book}" value="${book.id_book}" readonly>
     
             <div style="font-size: 16px; color: white;">Название:</div>
-            <input type="text" style="margin: 10px;  width: 80%;" class="input-book" id="title_${book.id_book}" value="${book.title}" readonly>
+            <input type="text" style="margin: 5px;  width: 80%;" class="input-book" id="title_${book.id_book}" value="${book.title}" readonly>
 
             <div style="font-size: 16px; color: white;">Цена:</div>
-            <input type="number" style="margin: 10px; width: 80%;" class="input-book" id="price_${book.price}" value="${book.price}" readonly>
+            <input type="number" style="margin: 5px; width: 80%;" class="input-book" id="price_${book.price}" value="${Number(book.price)}" readonly>
     
             <div style="font-size: 16px; color: white;">Регистрационные номера:</div>
-            <input type="text" style="margin: 10px; width: 80%;" class="input-book" id="book_numbers_${book.id_book}" value="${book.book_numbers.join(', ')}">
+            <input type="text" style="margin: 5px; width: 80%;" class="input-book" id="book_numbers_${book.id_book}" value="${book.book_numbers.join(', ')}">
       </div>
       `).join('');
    
@@ -566,7 +578,7 @@ document.getElementById('sell-books').addEventListener('click', async function()
     }
 });
 
-// обрабочкий кнопки "Сформировать отчет"
+// обрабочкик кнопки "Сформировать отчет"
 let allDataReport = [];
 document.getElementById('openModalBtn-report').addEventListener('click', async function() {
    document.getElementById('myModal-report').style.display = 'block';
@@ -725,7 +737,25 @@ function populateSimilarBooksTable(similarBooks) {
 // выход со страницы
 const logoutButton = document.getElementById("logoutButton");
 
-logoutButton.addEventListener("click", function() {
+logoutButton.addEventListener("click", async function() {
     localStorage.removeItem('userId');
     window.location.href = "index.html";
+    try {
+      const response = await fetch(`http://127.0.0.1:8000/seller/${userId}/deauthorize/`, { 
+         method: 'PATCH',
+         headers: {
+            'Content-Type': 'application/json'
+         },
+      });
+
+      if (!response.ok) {
+         throw new Error(`Ошибка: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log ("result", result);
+
+   } catch (error) {
+      console.error('Ошибка при получении данных выбранных книг:', error);
+   }
 });
