@@ -87,6 +87,7 @@ function sortBooksByPrice(data, order) {
 
 // функция заполнения таблицы с книгами данными с сервера
 let selectedBook = null;
+let selectedBookInf = null;
 let selectedBooks = [];
 function populateTable(data) {
    const tableBody = document.getElementById('data-table').querySelector('tbody');
@@ -163,6 +164,11 @@ function populateTable(data) {
             selectedBooks.push(item.id_book);
             row.classList.add('selected');
          }
+      });
+
+      row.addEventListener('dblclick', function() {
+         selectedBookInf = item;
+         openModalDelete(selectedBookInf)
       });
 
       tableBody.appendChild(row);
@@ -561,7 +567,12 @@ let allDataReport = [];
 document.getElementById('openModalBtn-report').addEventListener('click', async function() {
    document.getElementById('myModal-report').style.display = 'block';
    try {
-      const response = await fetch(''); // Надо вставить
+      const response = await fetch('http://127.0.0.1:8000/sales/', { //добавить!!!!
+         method: 'GET',
+         headers: {
+             'Content-Type': 'application/json'
+         },
+      });
 
       if (!response.ok) {
          throw new Error(`Ошибка: ${response.status}`);
@@ -592,7 +603,7 @@ function populateTableReport(data) {
 
       const IdSellerCell = document.createElement('td');
       IdSellerCell.textContent = item.id_seller;
-      row.appendChild(publishingCell);
+      row.appendChild(IdSellerCel);
 
       const DateCell = document.createElement('td');
       DateCell.textContent = item.date_of_sale;
@@ -619,5 +630,36 @@ span.onclick = function() {
 window.onclick = function(event) {
    if (event.target == modal_report) {
       modal_report.style.display = "none";
+   }
+}
+
+function openModalDelete(selectedBookInf) {
+   document.getElementById('id-book-selected').value = selectedBookInf.id_book;
+   document.getElementById('name-book-selected').value = selectedBookInf.title;
+   document.getElementById('publishing-book-selected').value = selectedBookInf.publishing;
+   document.getElementById('price-book-selected').value = selectedBookInf.price;
+   document.getElementById('rack-number-book-selected').value = selectedBookInf.rack_number;
+   document.getElementById('number-of-copies-book-selected').value = selectedBookInf.number_of_copies;
+   document.getElementById('discounted-price-book-selected').value = selectedBookInf.discounted_price;
+   document.getElementById('description-book-selected').value = selectedBookInf.description;
+   document.getElementById('genre-book-selected').value = selectedBookInf.genre.name_of_genre;
+   document.getElementById('name-of-discount-book-selected').value = selectedBookInf.discount && selectedBookInf.discount.name_of_discount ? selectedBookInf.discount.name_of_discount : '';
+   document.getElementById('discount-book-selected').value = selectedBookInf.discount && selectedBookInf.discount.discount_percentage ? `${selectedBookInf.discount.discount_percentage}%` : '';
+   const authorsString = bookData.authors.map(author => `${author.author_last_name} ${author.author_first_name}`).join(', ');
+   document.getElementById('authors-book-selected').value = authorsString;;
+   document.getElementById('myModal-book').style.display = 'block';
+}
+
+var modal_book = document.getElementById("myModal-book");
+var span_book = document.getElementsByClassName("close-book")[0];
+// закрытие модального окна c отдельной книгой
+span_book.onclick = function() {
+   modal_book.style.display = "none";
+   selectedBookInf = null;
+}
+window.onclick = function(event) {
+   if (event.target == modal_book) {
+      modal_book.style.display = "none";
+      selectedBookInf = null;
    }
 }
