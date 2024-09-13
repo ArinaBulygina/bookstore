@@ -466,7 +466,7 @@ function showModal(booksData) {
             <input type="text" style="margin: 10px;  width: 80%;" class="input-book" id="title_${book.id_book}" value="${book.title}" readonly>
 
             <div style="font-size: 16px; color: white;">Цена:</div>
-            <input type="number" style="margin: 10px; width: 80%;" class="input-book" id="price_${book.price_of_sale}" value="${book.price_of_sale}" readonly>
+            <input type="number" style="margin: 10px; width: 80%;" class="input-book" id="price_${book.price}" value="${book.price}" readonly>
     
             <div style="font-size: 16px; color: white;">Регистрационные номера:</div>
             <input type="text" style="margin: 10px; width: 80%;" class="input-book" id="book_numbers_${book.id_book}" value="${book.book_numbers.join(', ')}">
@@ -535,7 +535,7 @@ document.getElementById('sell-books').addEventListener('click', async function()
 
     try {
         // Отправка данных на сервер
-        const response = await fetch('', { //добавить!!!!
+        const response = await fetch('http://127.0.0.1:8000/sales/', { //добавить!!!!
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
