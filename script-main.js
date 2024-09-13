@@ -460,16 +460,16 @@ function showModal(booksData) {
    modalContent.innerHTML = booksData.map(book => `
       <div style="margin: 10px;">
             <div style="font-size: 16px; color: white;">ID:</div>
-            <input type="text" style="margin: 10px; width: 50%;" class="input-book" id="id_${book.id_book}" value="${book.id_book}" readonly>
+            <input type="text" style="margin: 10px; width: 80%;" class="input-book" id="id_${book.id_book}" value="${book.id_book}" readonly>
     
             <div style="font-size: 16px; color: white;">Название:</div>
-            <input type="text" style="margin: 10px;  width: 50%;" class="input-book" id="title_${book.id_book}" value="${book.title}" readonly>
+            <input type="text" style="margin: 10px;  width: 80%;" class="input-book" id="title_${book.id_book}" value="${book.title}" readonly>
 
             <div style="font-size: 16px; color: white;">Цена:</div>
-            <input type="number" style="margin: 10px; width: 50%;" class="input-book" id="price_${book.price_of_sale}" value="${book.price_of_sale}" readonly>
+            <input type="number" style="margin: 10px; width: 80%;" class="input-book" id="price_${book.price_of_sale}" value="${book.price_of_sale}" readonly>
     
             <div style="font-size: 16px; color: white;">Регистрационные номера:</div>
-            <input type="text" style="margin: 10px; width: 50%;" class="input-book" id="book_numbers_${book.id_book}" value="${book.book_numbers.join(', ')}">
+            <input type="text" style="margin: 10px; width: 80%;" class="input-book" id="book_numbers_${book.id_book}" value="${book.book_numbers.join(', ')}">
       </div>
       `).join('');
    
@@ -556,3 +556,68 @@ document.getElementById('sell-books').addEventListener('click', async function()
         Messages_sell.innerHTML = 'Ошибка :(';
     }
 });
+
+let allDataReport = [];
+document.getElementById('openModalBtn-report').addEventListener('click', async function() {
+   document.getElementById('myModal-report').style.display = 'block';
+   try {
+      const response = await fetch(''); // Надо вставить
+
+      if (!response.ok) {
+         throw new Error(`Ошибка: ${response.status}`);
+      }
+
+      const data = await response.json();
+      allDataReport = Array.isArray(data) ? data : [];
+      populateTableReport(allDataReport);
+   } catch (error) {
+      console.error('Ошибка при получении данных:', error);
+   }
+});
+
+function populateTableReport(data) {
+   const tableBody = document.getElementById('data-table-report').querySelector('tbody');
+   tableBody.innerHTML = '';
+   
+   data.forEach(item => {
+      const row = document.createElement('tr');
+      
+      const IdSaleCell = document.createElement('td');
+      IdSaleCell.textContent = item.id_sale;
+      row.appendChild(IdSaleCell);
+
+      const BookNumberCell = document.createElement('td');
+      BookNumberCell.textContent = item.book_number;
+      row.appendChild(BookNumberCell);
+
+      const IdSellerCell = document.createElement('td');
+      IdSellerCell.textContent = item.id_seller;
+      row.appendChild(publishingCell);
+
+      const DateCell = document.createElement('td');
+      DateCell.textContent = item.date_of_sale;
+      row.appendChild(DateCell);
+
+      const PriceCell = document.createElement('td');
+      PriceCell.textContent = item.price_of_sale;
+      row.appendChild(PriceCell);
+
+      Array.from(row.children).forEach(cell => {
+         cell.style.wordWrap = "break-word";
+         cell.style.whiteSpace = "normal";
+      });
+
+      tableBody.appendChild(row);
+   });
+}
+
+var modal_report = document.getElementById("myModal-report");
+var span = document.getElementsByClassName("close-report")[0];
+span.onclick = function() {
+   modal_report.style.display = "none";
+}
+window.onclick = function(event) {
+   if (event.target == modal_report) {
+      modal_report.style.display = "none";
+   }
+}
